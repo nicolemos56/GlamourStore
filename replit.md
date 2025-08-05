@@ -1,6 +1,6 @@
 # Overview
 
-Nc Glamourstore is a Flask-based e-commerce web application for an online store specializing in women's fashion and beauty products. The application provides a catalog browsing experience with shopping cart functionality, featuring products across categories like cosmetics, women's clothing, and footwear. The system uses session-based cart management and includes search and filtering capabilities for product discovery.
+Nc Glamourstore é uma aplicação web de e-commerce baseada em Flask para uma loja online especializada em moda feminina, calçados, acessórios e produtos de beleza. A aplicação oferece uma experiência completa de navegação no catálogo com funcionalidade de carrinho de compras, incluindo produtos em categorias como cosméticos, roupas femininas, calçados, bolsas e acessórios. O sistema usa gerenciamento de carrinho baseado em sessões, inclui busca e filtragem por categoria, paginação de produtos, e processo de finalização de compra com formulário de dados pessoais.
 
 # User Preferences
 
@@ -26,15 +26,24 @@ Preferred communication style: Simple, everyday language.
 - **State Management**: Session initialization middleware ensures cart availability on all requests
 
 ## Product Catalog
-- **Data Structure**: Static product definitions with hardcoded inventory
+- **Data Structure**: Expanded static product catalog with 32 products across all categories
 - **Product Attributes**: ID, name, price, category, and external image URLs
 - **Image Hosting**: External stock photos from Pixabay for product imagery
-- **Categories**: Dynamic category extraction from product data for filtering
+- **Categories**: Complete category coverage - Acessórios, Bolsas, Calçados Femininos, Calçados Infantis, Cosméticos, Produtos e acessórios de cabelo, Roupas Femininas
+- **Pagination**: 8 products per page with navigation controls
 
 ## Search and Filtering
 - **Search Implementation**: Server-side text matching against product names
-- **Category Filtering**: URL parameter-based category selection
+- **Category Filtering**: URL parameter-based category selection with scrollable category list
 - **Combined Filtering**: Support for simultaneous search and category filtering
+- **Pagination**: Smart pagination with ellipsis for large page counts
+
+## User Interface Enhancements
+- **Quantity Selection**: Interactive +/- buttons for product quantity selection instead of dropdown
+- **Checkout Process**: Two-page checkout flow - summary page and detailed finalizar page
+- **Finalizar Page**: Complete order form with delivery method, payment options, personal data, and order summary
+- **Footer**: Contact information including address, phone, email, and social links
+- **Responsive Design**: Mobile-optimized layout with Bootstrap 5 components
 
 # External Dependencies
 

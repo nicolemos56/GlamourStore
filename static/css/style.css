@@ -200,3 +200,90 @@ header {
 ::-webkit-scrollbar-thumb:hover {
     background: #5a2d91;
 }
+
+/* Categories scroll styling */
+.categories-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.categories-scroll::-webkit-scrollbar-track {
+    background: #f8f9fa;
+}
+
+.categories-scroll::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 3px;
+}
+
+/* Pagination Styles */
+.pagination .page-link {
+    color: var(--primary-color);
+    border-color: var(--border-color);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.pagination .page-link:hover {
+    color: #5a2d91;
+    background-color: #f8f9ff;
+    border-color: var(--primary-color);
+}
+
+/* Quantity Controls */
+.quantity-input {
+    max-width: 60px;
+    background-color: white !important;
+}
+
+.quantity-btn {
+    border-color: var(--border-color) !important;
+    color: var(--primary-color) !important;
+}
+
+.quantity-btn:hover {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border-color: var(--primary-color) !important;
+}
+
+/* Finalizar page specific styles */
+.card-header {
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Footer styles */
+footer {
+    background: linear-gradient(135deg, #343a40 0%, #495057 100%) !important;
+}
+
+footer a {
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Enhanced card hover effects */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Loading states */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

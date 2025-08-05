@@ -16,6 +16,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Quantity controls functionality
+    const quantityBtns = document.querySelectorAll('.quantity-btn');
+    quantityBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const action = this.getAttribute('data-action');
+            const input = this.closest('.input-group').querySelector('.quantity-input');
+            let currentValue = parseInt(input.value);
+            
+            if (action === 'increase' && currentValue < 10) {
+                input.value = currentValue + 1;
+            } else if (action === 'decrease' && currentValue > 1) {
+                input.value = currentValue - 1;
+            }
+            
+            // Add visual feedback
+            input.style.backgroundColor = '#e7f3ff';
+            setTimeout(() => {
+                input.style.backgroundColor = '';
+            }, 300);
+        });
+    });
+    
     // Add quantity change animations
     const quantitySelects = document.querySelectorAll('select[name="quantity"]');
     quantitySelects.forEach(select => {
