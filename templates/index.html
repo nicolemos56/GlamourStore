@@ -42,16 +42,40 @@
         <h5 class="fw-bold mb-3"><i class="fas fa-shopping-cart"></i> Carrinho</h5>
         <div class="card">
             <div class="card-body">
-                <p class="mb-2"><strong>Items:</strong> {{ cart_count }} produto(s)</p>
-                <p class="mb-3"><strong>Total:</strong> {{ "{:,.2f}".format(cart_total) }} Kz</p>
+                <div class="cart-summary mb-3">
+                    <p class="mb-2"><strong>Items:</strong> <span id="cart-count">{{ cart_count }}</span> produto(s)</p>
+                    <p class="mb-3"><strong>Total:</strong> <span id="cart-total">{{ "{:,.2f}".format(cart_total) }}</span> Kz</p>
+                </div>
+                
+                <!-- Cart Items List -->
+                <div id="cart-items-list" class="mb-3">
+                    {% for item in cart_items %}
+                        <div class="cart-item mb-2 p-2 border rounded" data-product-id="{{ item.product.id }}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 small">{{ item.product.name }}</h6>
+                                    <small class="text-muted">{{ "{:,.2f}".format(item.product.price) }} Kz cada</small>
+                                </div>
+                                <div class="quantity-controls d-flex align-items-center">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm cart-quantity-btn" 
+                                            data-action="decrease" data-product-id="{{ item.product.id }}">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="mx-2 quantity-display">{{ item.quantity }}</span>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm cart-quantity-btn" 
+                                            data-action="increase" data-product-id="{{ item.product.id }}">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
                 
                 <div class="d-grid gap-2">
-                    <form method="POST" action="{{ url_for('clear_cart') }}" style="display: inline;">
-                        <button type="submit" class="btn btn-outline-danger btn-sm w-100" 
-                                onclick="return confirm('Limpar todo o carrinho?')">
-                            <i class="fas fa-trash"></i> Limpar
-                        </button>
-                    </form>
+                    <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="clearCart()">
+                        <i class="fas fa-trash"></i> Limpar
+                    </button>
                     
                     <a href="{{ url_for('finalizar') }}" class="btn btn-success btn-sm">
                         <i class="fas fa-check"></i> Finalizar

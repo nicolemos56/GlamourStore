@@ -61,23 +61,67 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Add to cart button animation
-    const addToCartBtns = document.querySelectorAll('button[type="submit"]');
-    addToCartBtns.forEach(btn => {
-        if (btn.textContent.includes('Adicionar')) {
-            btn.addEventListener('click', function(e) {
-                // Visual feedback
-                const originalText = this.innerHTML;
-                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adicionando...';
-                this.disabled = true;
-                
-                // Re-enable after form submission
-                setTimeout(() => {
-                    this.innerHTML = originalText;
-                    this.disabled = false;
-                }, 1000);
+    // Add to cart functionality with AJAX
+    const addToCartForms = document.querySelectorAll('form[action*="add_to_cart"]');
+    addToCartForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            // Visual feedback
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adicionando...';
+            submitBtn.disabled = true;
+            
+            // Send AJAX request
+            fetch('/add_to_cart', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateCartDisplay(data.cart_total, data.cart_count);
+                    showSuccessMessage(data.message);
+                    
+                    // Get updated cart items via another request
+                    fetch('/get_cart_items', {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(cartData => {
+                        updateCartItemsList(cartData.cart_items);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showErrorMessage('Erro ao adicionar produto ao carrinho');
+            })
+            .finally(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
             });
-        }
+        });
+    });
+    
+    // Cart quantity controls
+    const cartQuantityBtns = document.querySelectorAll('.cart-quantity-btn');
+    cartQuantityBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const action = this.getAttribute('data-action');
+            const productId = this.getAttribute('data-product-id');
+            
+            updateCartQuantity(productId, action);
+        });
     });
     
     // Search input enhancement
@@ -145,10 +189,156 @@ function formatCurrency(amount) {
     }).format(amount);
 }
 
+// Function to update cart display
+function updateCartDisplay(total, count) {
+    const cartTotalElement = document.getElementById('cart-total');
+    const cartCountElement = document.getElementById('cart-count');
+    
+    if (cartTotalElement) {
+        cartTotalElement.textContent = new Intl.NumberFormat('pt-PT', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(total);
+    }
+    
+    if (cartCountElement) {
+        cartCountElement.textContent = count;
+    }
+    
+    // Add animation to cart widget
+    const cartWidget = document.querySelector('.cart-widget');
+    if (cartWidget) {
+        cartWidget.style.animation = 'pulse 0.5s ease-in-out';
+        setTimeout(() => {
+            cartWidget.style.animation = '';
+        }, 500);
+    }
+}
+
+// Function to update cart quantities
+function updateCartQuantity(productId, action) {
+    fetch('/update_cart_quantity', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            product_id: productId,
+            action: action
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            updateCartDisplay(data.cart_total, data.cart_count);
+            updateCartItemsList(data.cart_items);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showErrorMessage('Erro ao atualizar carrinho');
+    });
+}
+
+// Function to update cart items list
+function updateCartItemsList(cartItems) {
+    const cartItemsList = document.getElementById('cart-items-list');
+    if (!cartItemsList) return;
+    
+    cartItemsList.innerHTML = '';
+    
+    cartItems.forEach(item => {
+        const cartItemDiv = document.createElement('div');
+        cartItemDiv.className = 'cart-item mb-2 p-2 border rounded';
+        cartItemDiv.setAttribute('data-product-id', item.id);
+        
+        cartItemDiv.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="flex-grow-1">
+                    <h6 class="mb-1 small">${item.name}</h6>
+                    <small class="text-muted">${new Intl.NumberFormat('pt-PT', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }).format(item.price)} Kz cada</small>
+                </div>
+                <div class="quantity-controls d-flex align-items-center">
+                    <button type="button" class="btn btn-outline-secondary btn-sm cart-quantity-btn" 
+                            data-action="decrease" data-product-id="${item.id}">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <span class="mx-2 quantity-display">${item.quantity}</span>
+                    <button type="button" class="btn btn-outline-secondary btn-sm cart-quantity-btn" 
+                            data-action="increase" data-product-id="${item.id}">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        cartItemsList.appendChild(cartItemDiv);
+    });
+    
+    // Re-attach event listeners to new buttons
+    const newQuantityBtns = cartItemsList.querySelectorAll('.cart-quantity-btn');
+    newQuantityBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const action = this.getAttribute('data-action');
+            const productId = this.getAttribute('data-product-id');
+            updateCartQuantity(productId, action);
+        });
+    });
+}
+
+// Function to clear cart
+function clearCart() {
+    if (!confirm('Tem certeza que deseja limpar todo o carrinho?')) {
+        return;
+    }
+    
+    fetch('/clear_cart', {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(() => {
+        updateCartDisplay(0, 0);
+        updateCartItemsList([]);
+        showSuccessMessage('Carrinho limpo com sucesso!');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showErrorMessage('Erro ao limpar carrinho');
+    });
+}
+
 // Function to show success messages
 function showSuccessMessage(message) {
     const alert = document.createElement('div');
     alert.className = 'alert alert-success alert-dismissible fade show position-fixed';
+    alert.style.top = '20px';
+    alert.style.right = '20px';
+    alert.style.zIndex = '9999';
+    alert.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alert);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        if (alert.parentNode) {
+            alert.parentNode.removeChild(alert);
+        }
+    }, 3000);
+}
+
+// Function to show error messages
+function showErrorMessage(message) {
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-danger alert-dismissible fade show position-fixed';
     alert.style.top = '20px';
     alert.style.right = '20px';
     alert.style.zIndex = '9999';

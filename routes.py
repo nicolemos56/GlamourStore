@@ -275,20 +275,26 @@ def index():
     end_index = start_index + per_page
     paginated_products = filtered_products[start_index:end_index]
     
-    # Calculate cart totals
+    # Calculate cart totals and prepare cart items
     cart_total = 0
     cart_count = 0
+    cart_items = []
     for product_id, quantity in session.get('cart', {}).items():
         product = next((p for p in PRODUCTS if p['id'] == int(product_id)), None)
         if product:
             cart_total += product['price'] * quantity
             cart_count += quantity
+            cart_items.append({
+                'product': product,
+                'quantity': quantity
+            })
     
     return render_template('index.html', 
                          products=paginated_products,
                          categories=CATEGORIES,
                          cart_total=cart_total,
                          cart_count=cart_count,
+                         cart_items=cart_items,
                          current_search=request.args.get('search', ''),
                          current_category=category_filter,
                          current_page=page,
@@ -309,13 +315,106 @@ def add_to_cart():
         session['cart'][product_id] = quantity
     
     session.modified = True
+    
+    # If it's an AJAX request, return JSON
+    if request.headers.get('Content-Type') == 'application/json' or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # Calculate new cart totals
+        cart_total = 0
+        cart_count = 0
+        for pid, qty in session.get('cart', {}).items():
+            product = next((p for p in PRODUCTS if p['id'] == int(pid)), None)
+            if product:
+                cart_total += product['price'] * qty
+                cart_count += qty
+        
+        return jsonify({
+            'success': True,
+            'cart_total': cart_total,
+            'cart_count': cart_count,
+            'message': f'Produto adicionado ao carrinho!'
+        })
+    
     return redirect(url_for('index'))
+
+@app.route('/update_cart_quantity', methods=['POST'])
+def update_cart_quantity():
+    data = request.get_json()
+    product_id = str(data.get('product_id'))
+    action = data.get('action')
+    
+    if 'cart' not in session:
+        session['cart'] = {}
+    
+    if product_id in session['cart']:
+        if action == 'increase':
+            session['cart'][product_id] += 1
+        elif action == 'decrease':
+            session['cart'][product_id] -= 1
+            if session['cart'][product_id] <= 0:
+                del session['cart'][product_id]
+        elif action == 'remove':
+            del session['cart'][product_id]
+    
+    session.modified = True
+    
+    # Calculate new cart totals
+    cart_total = 0
+    cart_count = 0
+    cart_items = []
+    
+    for pid, qty in session.get('cart', {}).items():
+        product = next((p for p in PRODUCTS if p['id'] == int(pid)), None)
+        if product:
+            item_total = product['price'] * qty
+            cart_total += item_total
+            cart_count += qty
+            cart_items.append({
+                'id': product['id'],
+                'name': product['name'],
+                'price': product['price'],
+                'quantity': qty,
+                'total': item_total
+            })
+    
+    return jsonify({
+        'success': True,
+        'cart_total': cart_total,
+        'cart_count': cart_count,
+        'cart_items': cart_items
+    })
 
 @app.route('/clear_cart', methods=['POST'])
 def clear_cart():
     session['cart'] = {}
     session.modified = True
+    
+    # If it's an AJAX request, return JSON
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({
+            'success': True,
+            'message': 'Carrinho limpo com sucesso!'
+        })
+    
     return redirect(url_for('index'))
+
+@app.route('/get_cart_items')
+def get_cart_items():
+    cart_items = []
+    for product_id, quantity in session.get('cart', {}).items():
+        product = next((p for p in PRODUCTS if p['id'] == int(product_id)), None)
+        if product:
+            cart_items.append({
+                'id': product['id'],
+                'name': product['name'],
+                'price': product['price'],
+                'quantity': quantity,
+                'total': product['price'] * quantity
+            })
+    
+    return jsonify({
+        'success': True,
+        'cart_items': cart_items
+    })
 
 @app.route('/checkout')
 def checkout():
