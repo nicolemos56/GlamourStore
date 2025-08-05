@@ -35,6 +35,85 @@
                     </div>
                 </div>
 
+                <!-- Delivery Address Form (Hidden by default) -->
+                <div class="card" id="delivery-address-form" style="display: none;">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0 fw-bold">Dados de Entrega</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="address_street" class="form-label">Rua</label>
+                            <input type="text" class="form-control" id="address_street" placeholder="Nome da rua e número">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address_neighborhood" class="form-label">Bairro</label>
+                            <input type="text" class="form-control" id="address_neighborhood" placeholder="Nome do bairro">
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label for="address_city" class="form-label">Cidade</label>
+                                <select class="form-select" id="address_city">
+                                    <option value="">Selecione a cidade</option>
+                                    <option value="Luanda">Luanda</option>
+                                    <option value="Huambo">Huambo</option>
+                                    <option value="Lobito">Lobito</option>
+                                    <option value="Benguela">Benguela</option>
+                                    <option value="Lubango">Lubango</option>
+                                    <option value="Kuito">Kuito</option>
+                                    <option value="Malanje">Malanje</option>
+                                    <option value="Namibe">Namibe</option>
+                                    <option value="Soyo">Soyo</option>
+                                    <option value="Cabinda">Cabinda</option>
+                                    <option value="Uíge">Uíge</option>
+                                    <option value="Saurimo">Saurimo</option>
+                                    <option value="Menongue">Menongue</option>
+                                    <option value="Maquela do Zombo">Maquela do Zombo</option>
+                                    <option value="Caxito">Caxito</option>
+                                    <option value="Sumbe">Sumbe</option>
+                                    <option value="Ndalatando">Ndalatando</option>
+                                    <option value="Caluquembe">Caluquembe</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label for="address_province" class="form-label">Província</label>
+                                <select class="form-select" id="address_province">
+                                    <option value="">Selecione a província</option>
+                                    <option value="Luanda">Luanda</option>
+                                    <option value="Huambo">Huambo</option>
+                                    <option value="Benguela">Benguela</option>
+                                    <option value="Huíla">Huíla</option>
+                                    <option value="Bié">Bié</option>
+                                    <option value="Malanje">Malanje</option>
+                                    <option value="Namibe">Namibe</option>
+                                    <option value="Zaire">Zaire</option>
+                                    <option value="Cabinda">Cabinda</option>
+                                    <option value="Uíge">Uíge</option>
+                                    <option value="Lunda Norte">Lunda Norte</option>
+                                    <option value="Cuando Cubango">Cuando Cubango</option>
+                                    <option value="Lunda Sul">Lunda Sul</option>
+                                    <option value="Bengo">Bengo</option>
+                                    <option value="Cuanza Sul">Cuanza Sul</option>
+                                    <option value="Cuanza Norte">Cuanza Norte</option>
+                                    <option value="Cunene">Cunene</option>
+                                    <option value="Moxico">Moxico</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address_country" class="form-label">País</label>
+                            <input type="text" class="form-control" id="address_country" value="Angola" readonly>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="delivery_notes" class="form-label">Notas para entrega</label>
+                            <textarea class="form-control" id="delivery_notes" rows="2" placeholder="Instruções especiais para a entrega (opcional)"></textarea>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Payment Method -->
                 <div class="card">
                     <div class="card-header bg-light">
@@ -166,37 +245,180 @@
     </div>
 </div>
 
+<!-- Order Confirmation Modal -->
+<div class="modal fade" id="orderConfirmationModal" tabindex="-1" aria-labelledby="orderConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="orderConfirmationModalLabel">
+                    <i class="fas fa-check-circle me-2"></i>Pedido Confirmado
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <i class="fas fa-shopping-bag fa-3x text-success mb-3"></i>
+                    <h4 class="text-success">Obrigado pela sua compra!</h4>
+                    <p class="text-muted">O seu pedido foi recebido com sucesso.</p>
+                </div>
+                
+                <div class="row">
+                    <!-- Customer Details -->
+                    <div class="col-md-6">
+                        <div class="card border-0 bg-light h-100">
+                            <div class="card-body">
+                                <h6 class="card-title fw-bold mb-3">
+                                    <i class="fas fa-user me-2 text-primary"></i>Dados do Cliente
+                                </h6>
+                                <div id="customer-details-modal">
+                                    <!-- Will be filled by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Details -->
+                    <div class="col-md-6">
+                        <div class="card border-0 bg-light h-100">
+                            <div class="card-body">
+                                <h6 class="card-title fw-bold mb-3">
+                                    <i class="fas fa-shopping-cart me-2 text-primary"></i>Detalhes do Pedido
+                                </h6>
+                                <div id="order-details-modal">
+                                    <!-- Will be filled by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Delivery Information -->
+                <div class="card border-0 bg-primary text-white mt-3">
+                    <div class="card-body text-center">
+                        <h6 class="fw-bold mb-2">
+                            <i class="fas fa-truck me-2"></i>Próximos Passos
+                        </h6>
+                        <p class="mb-0 small">
+                            Receberá um e-mail de confirmação com os detalhes do seu pedido.<br>
+                            Entraremos em contacto em breve para coordenar a entrega.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" onclick="goToHomePage()">
+                    <i class="fas fa-home me-2"></i>Voltar à Loja
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+// Show/hide delivery address form
+document.addEventListener('DOMContentLoaded', function() {
+    const pickupRadio = document.getElementById('pickup');
+    const homeDeliveryRadio = document.getElementById('home_delivery');
+    const deliveryAddressForm = document.getElementById('delivery-address-form');
+    
+    pickupRadio.addEventListener('change', function() {
+        if (this.checked) {
+            deliveryAddressForm.style.display = 'none';
+        }
+    });
+    
+    homeDeliveryRadio.addEventListener('change', function() {
+        if (this.checked) {
+            deliveryAddressForm.style.display = 'block';
+        }
+    });
+});
+
 function finalizeOrder() {
     const firstName = document.getElementById('first_name').value;
     const phone = document.getElementById('phone').value;
     const email = document.getElementById('email').value;
     
     if (!firstName || !phone || !email) {
-        alert('Por favor, preencha os campos obrigatórios: Nome, Telemóvel e E-Mail');
+        showAlert('Por favor, preencha os campos obrigatórios: Nome, Telemóvel e E-Mail', 'warning');
         return;
     }
     
-    // Simulate order processing
     const deliveryMethod = document.querySelector('input[name="delivery_method"]:checked').value;
     const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
     
-    let message = `Pedido recebido com sucesso!\n\n`;
-    message += `Nome: ${firstName}\n`;
-    message += `Telemóvel: ${phone}\n`;
-    message += `E-Mail: ${email}\n\n`;
-    message += `Método de entrega: ${deliveryMethod === 'pickup' ? 'Levantar na loja' : 'Entrega em casa'}\n`;
-    message += `Método de pagamento: ${getPaymentMethodText(paymentMethod)}\n\n`;
-    message += `Total: {{ "{:,.2f}".format(cart_total) }} Kz\n\n`;
-    message += `Receberá um e-mail de confirmação em breve.`;
+    // Validate delivery address if home delivery is selected
+    if (deliveryMethod === 'home_delivery') {
+        const street = document.getElementById('address_street').value;
+        const neighborhood = document.getElementById('address_neighborhood').value;
+        const city = document.getElementById('address_city').value;
+        const province = document.getElementById('address_province').value;
+        
+        if (!street || !neighborhood || !city || !province) {
+            showAlert('Por favor, preencha todos os campos de endereço para entrega', 'warning');
+            return;
+        }
+    }
     
-    alert(message);
+    // Populate modal with order details
+    populateOrderConfirmationModal();
     
-    // Clear cart and redirect
-    fetch('/clear_cart', { method: 'POST' })
-        .then(() => {
-            window.location.href = '/';
-        });
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('orderConfirmationModal'));
+    modal.show();
+}
+
+function populateOrderConfirmationModal() {
+    const firstName = document.getElementById('first_name').value;
+    const nif = document.getElementById('nif').value;
+    const phone = document.getElementById('phone').value;
+    const email = document.getElementById('email').value;
+    const deliveryMethod = document.querySelector('input[name="delivery_method"]:checked').value;
+    const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+    
+    // Customer Details
+    let customerDetails = `
+        <p class="mb-1"><strong>Nome:</strong> ${firstName}</p>
+        <p class="mb-1"><strong>Telemóvel:</strong> ${phone}</p>
+        <p class="mb-1"><strong>E-Mail:</strong> ${email}</p>
+    `;
+    if (nif) {
+        customerDetails += `<p class="mb-1"><strong>NIF:</strong> ${nif}</p>`;
+    }
+    
+    // Add delivery address if home delivery
+    if (deliveryMethod === 'home_delivery') {
+        const street = document.getElementById('address_street').value;
+        const neighborhood = document.getElementById('address_neighborhood').value;
+        const city = document.getElementById('address_city').value;
+        const province = document.getElementById('address_province').value;
+        const deliveryNotes = document.getElementById('delivery_notes').value;
+        
+        customerDetails += `
+            <hr class="my-2">
+            <p class="mb-1 fw-bold text-primary">Endereço de Entrega:</p>
+            <p class="mb-1">${street}</p>
+            <p class="mb-1">${neighborhood}</p>
+            <p class="mb-1">${city}, ${province}</p>
+            <p class="mb-1">Angola</p>
+        `;
+        if (deliveryNotes) {
+            customerDetails += `<p class="mb-1"><small><strong>Notas:</strong> ${deliveryNotes}</small></p>`;
+        }
+    }
+    
+    document.getElementById('customer-details-modal').innerHTML = customerDetails;
+    
+    // Order Details
+    const orderDetails = `
+        <p class="mb-1"><strong>Entrega:</strong> ${deliveryMethod === 'pickup' ? 'Levantar na loja' : 'Entrega em casa'}</p>
+        <p class="mb-1"><strong>Pagamento:</strong> ${getPaymentMethodText(paymentMethod)}</p>
+        <hr class="my-2">
+        <p class="mb-1 fw-bold text-success">Total: {{ "{:,.2f}".format(cart_total) }} Kz</p>
+    `;
+    
+    document.getElementById('order-details-modal').innerHTML = orderDetails;
 }
 
 function getPaymentMethodText(method) {
@@ -206,6 +428,34 @@ function getPaymentMethodText(method) {
         case 'cash_on_pickup': return 'Pagar no levantamento';
         default: return method;
     }
+}
+
+function goToHomePage() {
+    // Clear cart and redirect to home
+    fetch('/clear_cart', { method: 'POST' })
+        .then(() => {
+            window.location.href = '/';
+        });
+}
+
+function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    alertDiv.style.top = '20px';
+    alertDiv.style.right = '20px';
+    alertDiv.style.zIndex = '9999';
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.parentNode.removeChild(alertDiv);
+        }
+    }, 5000);
 }
 </script>
 {% endblock %}

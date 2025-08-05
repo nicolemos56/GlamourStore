@@ -39,11 +39,16 @@ Preferred communication style: Simple, everyday language.
 - **Pagination**: Smart pagination with ellipsis for large page counts
 
 ## User Interface Enhancements
-- **Quantity Selection**: Interactive +/- buttons for product quantity selection instead of dropdown
-- **Checkout Process**: Two-page checkout flow - summary page and detailed finalizar page
-- **Finalizar Page**: Complete order form with delivery method, payment options, personal data, and order summary
+- **Real-time Cart**: AJAX-powered shopping cart with instant updates without page reloads
+- **Quantity Selection**: Interactive +/- buttons for product quantity selection in both catalog and cart
+- **Cart Management**: Real-time quantity adjustments, item removal, and cart clearing with visual feedback
+- **Checkout Process**: Enhanced checkout flow with delivery address form and structured confirmation modal
+- **Delivery Address Form**: Angola-specific address format (Rua, Bairro, Cidade/Província, País) without postal codes
+- **Order Confirmation Modal**: Professional, structured modal replacing console alerts with complete order summary
+- **Dynamic Forms**: Conditional delivery address form that appears when "Entrega numa morada" is selected
 - **Footer**: Contact information including address, phone, email, and social links
 - **Responsive Design**: Mobile-optimized layout with Bootstrap 5 components
+- **Visual Feedback**: Success/error notifications, loading states, and smooth animations
 
 # External Dependencies
 
