@@ -17,8 +17,10 @@ Preferred communication style: Simple, everyday language.
 ## Backend Architecture
 - **Web Framework**: Flask with minimal configuration for rapid development
 - **Session Management**: Flask's built-in session handling with server-side cart storage
-- **Application Structure**: Simple modular design with separated routes and main application files
-- **Data Storage**: In-memory product catalog using Python dictionaries (no persistent database)
+- **Authentication**: Flask-Login for admin panel user management
+- **Application Structure**: Modular design with separated routes, database layer, and admin functionality
+- **Data Storage**: SQLite database for persistent data storage with proper schema design
+- **Admin Panel**: Complete administrative interface for managing products, orders, and store operations
 
 ## Cart Management
 - **Storage Method**: Server-side sessions for cart persistence across requests
@@ -50,6 +52,14 @@ Preferred communication style: Simple, everyday language.
 - **Responsive Design**: Mobile-optimized layout with Bootstrap 5 components
 - **Visual Feedback**: Success/error notifications, loading states, and smooth animations
 
+## Admin Panel Features
+- **Dashboard**: Overview with key statistics, recent orders, and quick actions
+- **Product Management**: Add, edit, delete, and manage product inventory with real-time preview
+- **Order Management**: View all orders, update status, and manage customer requests
+- **User Authentication**: Secure login system for admin access with Flask-Login
+- **Database Administration**: SQLite database with proper schema and data integrity
+- **Responsive Admin UI**: Bootstrap-based admin interface optimized for all devices
+
 # External Dependencies
 
 ## Frontend Libraries
@@ -61,7 +71,10 @@ Preferred communication style: Simple, everyday language.
 
 ## Python Packages
 - **Flask**: Core web framework for application structure
+- **Flask-Login**: User authentication and session management for admin panel
 - **Werkzeug**: WSGI utilities including ProxyFix middleware for deployment
+- **SQLite3**: Built-in database engine for persistent data storage
+- **PyMySQL**: MySQL connector (configured but using SQLite for development)
 
 ## Development Tools
 - **Python Logging**: Built-in logging module for debugging and monitoring

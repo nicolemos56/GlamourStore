@@ -1,5 +1,7 @@
-from flask import render_template, request, session, redirect, url_for, jsonify
+from flask import render_template, request, session, redirect, url_for, jsonify, flash
+from flask_login import login_user, logout_user, login_required, current_user
 from app import app
+from database import AdminUser, get_dashboard_stats, get_products, get_orders, get_categories, add_product, update_product, delete_product, get_product_by_id, update_order_status
 
 # Product data with stock photos - Expanded catalog
 PRODUCTS = [
@@ -451,6 +453,117 @@ def finalizar():
             cart_total += item_total
     
     return render_template('finalizar.html', cart_items=cart_items, cart_total=cart_total)
+
+# ===== ADMIN PANEL ROUTES =====
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        user = AdminUser.get_by_username(username)
+        if user and user.check_password(password):
+            login_user(user)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('admin_dashboard'))
+        else:
+            flash('Credenciais inválidas. Tente novamente.', 'error')
+    
+    return render_template('admin/login.html')
+
+@app.route('/admin/logout')
+@login_required
+def admin_logout():
+    logout_user()
+    flash('Logout realizado com sucesso.', 'success')
+    return redirect(url_for('admin_login'))
+
+@app.route('/admin')
+@app.route('/admin/dashboard')
+@login_required
+def admin_dashboard():
+    stats = get_dashboard_stats()
+    return render_template('admin/dashboard.html', stats=stats)
+
+@app.route('/admin/products')
+@login_required
+def admin_products():
+    products = get_products()
+    categories = get_categories()
+    return render_template('admin/products.html', products=products, categories=categories)
+
+@app.route('/admin/products/add', methods=['GET', 'POST'])
+@login_required
+def admin_add_product():
+    if request.method == 'POST':
+        name = request.form['name']
+        price = float(request.form['price'])
+        category = request.form['category']
+        image_url = request.form['image_url']
+        description = request.form['description']
+        stock_quantity = int(request.form['stock_quantity'])
+        
+        product_id = add_product(name, price, category, image_url, description, stock_quantity)
+        if product_id:
+            flash('Produto adicionado com sucesso!', 'success')
+            return redirect(url_for('admin_products'))
+        else:
+            flash('Erro ao adicionar produto.', 'error')
+    
+    categories = get_categories()
+    return render_template('admin/add_product.html', categories=categories)
+
+@app.route('/admin/products/edit/<int:product_id>', methods=['GET', 'POST'])
+@login_required
+def admin_edit_product(product_id):
+    product = get_product_by_id(product_id)
+    if not product:
+        flash('Produto não encontrado.', 'error')
+        return redirect(url_for('admin_products'))
+    
+    if request.method == 'POST':
+        name = request.form['name']
+        price = float(request.form['price'])
+        category = request.form['category']
+        image_url = request.form['image_url']
+        description = request.form['description']
+        stock_quantity = int(request.form['stock_quantity'])
+        is_active = 'is_active' in request.form
+        
+        if update_product(product_id, name, price, category, image_url, description, stock_quantity, is_active):
+            flash('Produto atualizado com sucesso!', 'success')
+            return redirect(url_for('admin_products'))
+        else:
+            flash('Erro ao atualizar produto.', 'error')
+    
+    categories = get_categories()
+    return render_template('admin/edit_product.html', product=product, categories=categories)
+
+@app.route('/admin/products/delete/<int:product_id>', methods=['POST'])
+@login_required
+def admin_delete_product(product_id):
+    if delete_product(product_id):
+        flash('Produto excluído com sucesso!', 'success')
+    else:
+        flash('Erro ao excluir produto.', 'error')
+    return redirect(url_for('admin_products'))
+
+@app.route('/admin/orders')
+@login_required
+def admin_orders():
+    orders = get_orders()
+    return render_template('admin/orders.html', orders=orders)
+
+@app.route('/admin/orders/update_status/<int:order_id>', methods=['POST'])
+@login_required
+def admin_update_order_status(order_id):
+    status = request.form['status']
+    if update_order_status(order_id, status):
+        flash('Status do pedido atualizado com sucesso!', 'success')
+    else:
+        flash('Erro ao atualizar status do pedido.', 'error')
+    return redirect(url_for('admin_orders'))
 
 @app.route('/update_cart', methods=['POST'])
 def update_cart():
