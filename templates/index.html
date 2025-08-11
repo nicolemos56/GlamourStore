@@ -124,7 +124,8 @@
                                         <button type="button" class="btn btn-outline-secondary btn-sm quantity-btn" data-action="decrease">
                                             <i class="fas fa-minus"></i>
                                         </button>
-                                        <input type="number" name="quantity" class="form-control text-center quantity-input" value="1" min="1" max="10" readonly>
+                                        <input type="number" name="quantity" class="form-control text-center quantity-input" 
+                                               value="1" min="1" max="{{ product.stock_quantity if product.stock_quantity else 10 }}" readonly>
                                         <button type="button" class="btn btn-outline-secondary btn-sm quantity-btn" data-action="increase">
                                             <i class="fas fa-plus"></i>
                                         </button>

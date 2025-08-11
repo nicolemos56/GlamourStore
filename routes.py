@@ -277,7 +277,8 @@ def index():
                 'name': p['name'],
                 'price': p['price'],
                 'category': p['category'],
-                'image': p['image_url'] if p['image_url'] else 'https://via.placeholder.com/300x250?text=Sem+Imagem'
+                'image': p['image_url'] if p['image_url'] else 'https://via.placeholder.com/300x250?text=Sem+Imagem',
+                'stock_quantity': p['stock_quantity']
             }
             filtered_products.append(product)
     

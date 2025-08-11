@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const input = this.closest('.input-group').querySelector('.quantity-input');
             let currentValue = parseInt(input.value);
             
-            if (action === 'increase' && currentValue < 10) {
+            const maxQuantity = parseInt(input.getAttribute('max')) || 10;
+            if (action === 'increase' && currentValue < maxQuantity) {
                 input.value = currentValue + 1;
             } else if (action === 'decrease' && currentValue > 1) {
                 input.value = currentValue - 1;
