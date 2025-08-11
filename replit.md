@@ -1,6 +1,6 @@
 # Overview
 
-Nc Glamourstore é uma aplicação web de e-commerce baseada em Flask para uma loja online especializada em moda feminina, calçados, acessórios e produtos de beleza. A aplicação oferece uma experiência completa de navegação no catálogo com funcionalidade de carrinho de compras, incluindo produtos em categorias como cosméticos, roupas femininas, calçados, bolsas e acessórios. O sistema usa gerenciamento de carrinho baseado em sessões, inclui busca e filtragem por categoria, paginação de produtos, e processo de finalização de compra com formulário de dados pessoais.
+Nc Glamourstore é uma aplicação web de e-commerce baseada em Flask para uma loja online especializada em moda feminina, calçados, acessórios e produtos de beleza. A aplicação oferece uma experiência completa de navegação no catálogo com funcionalidade de carrinho de compras, incluindo produtos em categorias como cosméticos, roupas femininas, calçados, bolsas e acessórios. O sistema usa gerenciamento de carrinho baseado em sessões, inclui busca e filtragem por categoria, paginação de produtos, e processo de finalização de compra com formulário de dados pessoais. TESTE
 
 # User Preferences
 
