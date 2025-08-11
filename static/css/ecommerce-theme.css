@@ -1,0 +1,358 @@
+/* NC Glamour Store - E-commerce Theme */
+:root {
+  /* Primary Green - from logo */
+  --primary-green: #5a7a5a;
+  --primary-green-light: #7a9a7a;
+  --primary-green-dark: #4a6a4a;
+  
+  /* Gold/Champagne - from logo */
+  --accent-gold: #d4af37;
+  --accent-gold-light: #f4cf57;
+  --accent-gold-dark: #b8941f;
+  
+  /* Neutral colors for e-commerce */
+  --neutral-dark: #2c3e50;
+  --neutral-medium: #34495e;
+  --neutral-light: #ecf0f1;
+  --neutral-white: #ffffff;
+  
+  /* Success and error colors */
+  --success-color: #27ae60;
+  --error-color: #e74c3c;
+  --warning-color: #f39c12;
+  --info-color: #3498db;
+  
+  /* Text colors */
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --text-light: #bdc3c7;
+}
+
+/* Global Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-primary);
+  background-color: #f8f9fa;
+}
+
+/* Header and Navigation */
+.navbar {
+  background-color: var(--primary-green) !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+  color: var(--accent-gold) !important;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+  color: var(--neutral-white) !important;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--accent-gold) !important;
+}
+
+/* Logo Styles */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-gold);
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--primary-green);
+  border-color: var(--primary-green);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-green-dark);
+  border-color: var(--primary-green-dark);
+  transform: translateY(-1px);
+}
+
+.btn-success {
+  background-color: var(--accent-gold);
+  border-color: var(--accent-gold);
+  color: var(--neutral-dark);
+}
+
+.btn-success:hover {
+  background-color: var(--accent-gold-dark);
+  border-color: var(--accent-gold-dark);
+  color: var(--neutral-white);
+}
+
+.btn-outline-primary {
+  color: var(--primary-green);
+  border-color: var(--primary-green);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-green);
+  border-color: var(--primary-green);
+}
+
+/* Product Cards */
+.card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.card-img-top {
+  border-radius: 15px 15px 0 0;
+  height: 250px;
+  object-fit: cover;
+}
+
+.card-title {
+  color: var(--neutral-dark);
+  font-weight: 600;
+}
+
+.card-text {
+  color: var(--text-secondary);
+}
+
+/* Price styling */
+.price {
+  color: var(--accent-gold-dark);
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Cart Styles */
+.cart-badge {
+  background-color: var(--error-color);
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.8rem;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+}
+
+.cart-item {
+  border-bottom: 1px solid var(--neutral-light);
+  padding: 15px 0;
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+/* Category Pills */
+.category-pill {
+  background-color: var(--primary-green-light);
+  color: white;
+  border-radius: 25px;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+  margin: 5px;
+}
+
+.category-pill:hover {
+  background-color: var(--primary-green-dark);
+  color: white;
+  text-decoration: none;
+  transform: scale(1.05);
+}
+
+.category-pill.active {
+  background-color: var(--accent-gold);
+  color: var(--neutral-dark);
+}
+
+/* Forms */
+.form-control:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 0.2rem rgba(90, 122, 90, 0.25);
+}
+
+.form-select:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 0.2rem rgba(90, 122, 90, 0.25);
+}
+
+/* Admin Panel Specific */
+.admin-sidebar {
+  background-color: var(--neutral-dark);
+  min-height: 100vh;
+}
+
+.admin-sidebar .nav-link {
+  color: var(--neutral-light);
+  border-radius: 10px;
+  margin: 5px 0;
+  transition: all 0.3s ease;
+}
+
+.admin-sidebar .nav-link:hover {
+  background-color: var(--primary-green);
+  color: white;
+}
+
+.admin-sidebar .nav-link.active {
+  background-color: var(--accent-gold);
+  color: var(--neutral-dark);
+}
+
+/* Statistics Cards */
+.stat-card {
+  background: linear-gradient(135deg, var(--primary-green), var(--primary-green-dark));
+  color: white;
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.stat-card.gold {
+  background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
+  color: var(--neutral-dark);
+}
+
+.stat-card.success {
+  background: linear-gradient(135deg, var(--success-color), #219a52);
+}
+
+.stat-card.info {
+  background: linear-gradient(135deg, var(--info-color), #2980b9);
+}
+
+/* Alerts */
+.alert-success {
+  background-color: rgba(39, 174, 96, 0.1);
+  border-color: var(--success-color);
+  color: var(--success-color);
+}
+
+.alert-danger {
+  background-color: rgba(231, 76, 60, 0.1);
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+
+/* Footer */
+.footer {
+  background-color: var(--neutral-dark);
+  color: var(--neutral-light);
+  padding: 40px 0 20px 0;
+}
+
+.footer h5 {
+  color: var(--accent-gold);
+}
+
+.footer a {
+  color: var(--neutral-light);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: var(--accent-gold);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .logo-image {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .navbar-brand {
+    font-size: 1.2rem;
+  }
+  
+  .card-img-top {
+    height: 200px;
+  }
+}
+
+/* Loading Animation */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  border-top-color: var(--accent-gold);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Quantity Controls */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-controls button {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--primary-green);
+  background-color: transparent;
+  color: var(--primary-green);
+  transition: all 0.3s ease;
+}
+
+.quantity-controls button:hover {
+  background-color: var(--primary-green);
+  color: white;
+}
+
+.quantity-display {
+  min-width: 40px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Image Upload Area */
+.image-upload-area {
+  border: 2px dashed var(--primary-green);
+  border-radius: 15px;
+  padding: 40px;
+  text-align: center;
+  background-color: rgba(90, 122, 90, 0.05);
+  transition: all 0.3s ease;
+}
+
+.image-upload-area:hover {
+  border-color: var(--accent-gold);
+  background-color: rgba(212, 175, 55, 0.05);
+}
+
+.image-upload-area.dragover {
+  border-color: var(--accent-gold);
+  background-color: rgba(212, 175, 55, 0.1);
+}

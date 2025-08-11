@@ -5,6 +5,16 @@ Nc Glamourstore é uma aplicação web de e-commerce baseada em Flask para uma l
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
+Last updated: August 11, 2025
+
+## Recent Updates
+- ✅ Migrated from Replit Agent to standard Replit environment
+- ✅ Converted SQLite to PostgreSQL database
+- ✅ Added all 32 products to admin panel management
+- ✅ Implemented image upload functionality (replaces URL-based images)
+- ✅ Applied new e-commerce color palette based on brand logo
+- ✅ Added circular logo to navigation and admin panels
+- ✅ Created comprehensive admin product management system
 
 # System Architecture
 
@@ -15,12 +25,13 @@ Preferred communication style: Simple, everyday language.
 - **Client-Side Enhancement**: Vanilla JavaScript for interactive cart features and visual feedback
 
 ## Backend Architecture
-- **Web Framework**: Flask with minimal configuration for rapid development
+- **Web Framework**: Flask with SQLAlchemy for database operations
 - **Session Management**: Flask's built-in session handling with server-side cart storage
-- **Authentication**: Flask-Login for admin panel user management
+- **Authentication**: Flask-Login for admin panel user management with secure password hashing
 - **Application Structure**: Modular design with separated routes, database layer, and admin functionality
-- **Data Storage**: SQLite database for persistent data storage with proper schema design
-- **Admin Panel**: Complete administrative interface for managing products, orders, and store operations
+- **Data Storage**: PostgreSQL database for scalable, production-ready data persistence
+- **Admin Panel**: Complete administrative interface with product management, image upload, and order tracking
+- **File Upload**: Secure image upload system with file validation and unique naming
 
 ## Cart Management
 - **Storage Method**: Server-side sessions for cart persistence across requests

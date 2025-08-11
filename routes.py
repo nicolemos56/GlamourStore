@@ -1,8 +1,11 @@
 from flask import render_template, request, session, redirect, url_for, jsonify, flash
 from flask_login import login_user, logout_user, login_required, current_user
-from app import app
+from werkzeug.utils import secure_filename
+from app import app, allowed_file, db
 from database import get_dashboard_stats, get_products, get_orders, get_categories, add_product, update_product, delete_product, get_product_by_id, update_order_status
-from models import User
+from models import User, Product, Order, OrderItem
+import os
+import uuid
 
 # Product data with stock photos - Expanded catalog
 PRODUCTS = [
@@ -262,12 +265,27 @@ def index():
     page = request.args.get('page', 1, type=int)
     per_page = 8  # 8 products per page
     
-    # Filter products based on search and category
-    filtered_products = PRODUCTS
+    # Get products from database
+    db_products = get_products()
     
+    # Convert database products to match PRODUCTS format for compatibility
+    filtered_products = []
+    for p in db_products:
+        if p['is_active']:  # Only show active products
+            product = {
+                'id': p['id'],
+                'name': p['name'],
+                'price': p['price'],
+                'category': p['category'],
+                'image': p['image_url'] if p['image_url'] else 'https://via.placeholder.com/300x250?text=Sem+Imagem'
+            }
+            filtered_products.append(product)
+    
+    # Apply search filter
     if search_query:
         filtered_products = [p for p in filtered_products if search_query in p['name'].lower()]
     
+    # Apply category filter
     if category_filter:
         filtered_products = [p for p in filtered_products if p['category'] == category_filter]
     
@@ -283,8 +301,16 @@ def index():
     cart_count = 0
     cart_items = []
     for product_id, quantity in session.get('cart', {}).items():
-        product = next((p for p in PRODUCTS if p['id'] == int(product_id)), None)
-        if product:
+        # Get product from database
+        db_product = get_product_by_id(int(product_id))
+        if db_product and db_product['is_active']:
+            product = {
+                'id': db_product['id'],
+                'name': db_product['name'],
+                'price': db_product['price'],
+                'category': db_product['category'],
+                'image': db_product['image_url'] if db_product['image_url'] else 'https://via.placeholder.com/300x250?text=Sem+Imagem'
+            }
             cart_total += product['price'] * quantity
             cart_count += quantity
             cart_items.append({
@@ -325,9 +351,9 @@ def add_to_cart():
         cart_total = 0
         cart_count = 0
         for pid, qty in session.get('cart', {}).items():
-            product = next((p for p in PRODUCTS if p['id'] == int(pid)), None)
-            if product:
-                cart_total += product['price'] * qty
+            db_product = get_product_by_id(int(pid))
+            if db_product and db_product['is_active']:
+                cart_total += db_product['price'] * qty
                 cart_count += qty
         
         return jsonify({
@@ -366,15 +392,15 @@ def update_cart_quantity():
     cart_items = []
     
     for pid, qty in session.get('cart', {}).items():
-        product = next((p for p in PRODUCTS if p['id'] == int(pid)), None)
-        if product:
-            item_total = product['price'] * qty
+        db_product = get_product_by_id(int(pid))
+        if db_product and db_product['is_active']:
+            item_total = db_product['price'] * qty
             cart_total += item_total
             cart_count += qty
             cart_items.append({
-                'id': product['id'],
-                'name': product['name'],
-                'price': product['price'],
+                'id': db_product['id'],
+                'name': db_product['name'],
+                'price': db_product['price'],
                 'quantity': qty,
                 'total': item_total
             })
@@ -404,14 +430,14 @@ def clear_cart():
 def get_cart_items():
     cart_items = []
     for product_id, quantity in session.get('cart', {}).items():
-        product = next((p for p in PRODUCTS if p['id'] == int(product_id)), None)
-        if product:
+        db_product = get_product_by_id(int(product_id))
+        if db_product and db_product['is_active']:
             cart_items.append({
-                'id': product['id'],
-                'name': product['name'],
-                'price': product['price'],
+                'id': db_product['id'],
+                'name': db_product['name'],
+                'price': db_product['price'],
                 'quantity': quantity,
-                'total': product['price'] * quantity
+                'total': db_product['price'] * quantity
             })
     
     return jsonify({
@@ -425,8 +451,15 @@ def checkout():
     cart_total = 0
     
     for product_id, quantity in session.get('cart', {}).items():
-        product = next((p for p in PRODUCTS if p['id'] == int(product_id)), None)
-        if product:
+        db_product = get_product_by_id(int(product_id))
+        if db_product and db_product['is_active']:
+            product = {
+                'id': db_product['id'],
+                'name': db_product['name'],
+                'price': db_product['price'],
+                'category': db_product['category'],
+                'image': db_product['image_url'] if db_product['image_url'] else 'https://via.placeholder.com/300x250?text=Sem+Imagem'
+            }
             item_total = product['price'] * quantity
             cart_items.append({
                 'product': product,
@@ -443,8 +476,15 @@ def finalizar():
     cart_total = 0
     
     for product_id, quantity in session.get('cart', {}).items():
-        product = next((p for p in PRODUCTS if p['id'] == int(product_id)), None)
-        if product:
+        db_product = get_product_by_id(int(product_id))
+        if db_product and db_product['is_active']:
+            product = {
+                'id': db_product['id'],
+                'name': db_product['name'],
+                'price': db_product['price'],
+                'category': db_product['category'],
+                'image': db_product['image_url'] if db_product['image_url'] else 'https://via.placeholder.com/300x250?text=Sem+Imagem'
+            }
             item_total = product['price'] * quantity
             cart_items.append({
                 'product': product,
@@ -501,9 +541,19 @@ def admin_add_product():
         name = request.form['name']
         price = float(request.form['price'])
         category = request.form['category']
-        image_url = request.form['image_url']
         description = request.form['description']
         stock_quantity = int(request.form['stock_quantity'])
+        
+        # Handle image upload
+        image_url = ''
+        if 'image' in request.files:
+            file = request.files['image']
+            if file.filename != '' and allowed_file(file.filename):
+                # Create unique filename
+                filename = str(uuid.uuid4()) + '.' + file.filename.rsplit('.', 1)[1].lower()
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(filepath)
+                image_url = f'/static/images/products/{filename}'
         
         product_id = add_product(name, price, category, image_url, description, stock_quantity)
         if product_id:
@@ -527,10 +577,26 @@ def admin_edit_product(product_id):
         name = request.form['name']
         price = float(request.form['price'])
         category = request.form['category']
-        image_url = request.form['image_url']
         description = request.form['description']
         stock_quantity = int(request.form['stock_quantity'])
         is_active = 'is_active' in request.form
+        
+        # Handle image upload
+        image_url = product['image_url']  # Keep existing image by default
+        if 'image' in request.files:
+            file = request.files['image']
+            if file.filename != '' and allowed_file(file.filename):
+                # Delete old image if exists
+                if image_url and image_url.startswith('/static/images/products/'):
+                    old_filepath = image_url[1:]  # Remove leading slash
+                    if os.path.exists(old_filepath):
+                        os.remove(old_filepath)
+                
+                # Create unique filename
+                filename = str(uuid.uuid4()) + '.' + file.filename.rsplit('.', 1)[1].lower()
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(filepath)
+                image_url = f'/static/images/products/{filename}'
         
         if update_product(product_id, name, price, category, image_url, description, stock_quantity, is_active):
             flash('Produto atualizado com sucesso!', 'success')

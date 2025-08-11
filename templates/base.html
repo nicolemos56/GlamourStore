@@ -1,78 +1,143 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Nc Glamourstore - Loja Online{% endblock %}</title>
-    
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <!-- Header -->
-    <header class="bg-primary text-white py-4 text-center">
-        <div class="container">
-            <h1 class="display-4 fw-bold mb-2">Nc Glamourstore</h1>
-            <h5 class="fw-light">Loja Online</h5>
-            <p class="mb-0">Sejam bem-vindos à nossa Loja Online! 🛍️</p>
-            <p class="small mb-0">✨ Roupas | Calçados | Cosméticos | Acessórios</p>
-            <p class="small mb-0">Aquisição Imediata & Por encomenda 📦</p>
-        </div>
-    </header>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>
+            {% block title %}Nc Glamourstore - Loja Online{% endblock %}
+        </title>
 
-    <!-- Main Content -->
-    <div class="container-fluid">
-        <div class="row">
-            {% block content %}{% endblock %}
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5 class="fw-bold mb-3">Informações de Contato</h5>
-                    <p class="mb-2">
-                        <i class="fas fa-map-marker-alt me-2"></i>
-                        Luanda, Kilamba, Angola
-                    </p>
-                    <p class="mb-2">
-                        <i class="fas fa-phone me-2"></i>
-                        +244 934 611 389
-                    </p>
-                    <p class="mb-2">
-                        <i class="fas fa-envelope me-2"></i>
-                        narcia_lages@gmail.com
-                    </p>
-                    <p class="mb-0">
-                        <i class="fas fa-user me-2"></i>
-                        narcia_lages
-                    </p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <h5 class="fw-bold mb-3">Nc Glamourstore</h5>
-                    <p class="mb-3">Sua loja online de confiança para moda, beleza e acessórios.</p>
-                    <div class="mb-3">
-                        <a href="#" class="text-white me-3">Política de Privacidade</a>
-                        <a href="#" class="text-white">Termos de Serviço</a>
+        <!-- Bootstrap 5 CSS -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <!-- Font Awesome Icons -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <!-- E-commerce Theme CSS -->
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/ecommerce-theme.css') }}"
+        />
+        <!-- Custom CSS -->
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/style.css') }}"
+        />
+    </head>
+    <body>
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand logo-container" href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="NC Glamour Store" class="logo-image">
+                    <span class="ms-2">NC Glamour Store</span>
+                </a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('index') }}">
+                                <i class="fas fa-home me-1"></i>Início
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('checkout') }}">
+                                <i class="fas fa-shopping-bag me-1"></i>Produtos
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <div class="d-flex align-items-center">
+                        <!-- Cart -->
+                        <div class="position-relative me-3">
+                            <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span id="cart-count" class="cart-badge">{{ cart_count or 0 }}</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Admin Link -->
+                        <a href="{{ url_for('admin_login') }}" class="btn btn-sm btn-success">
+                            <i class="fas fa-user-shield me-1"></i>Admin
+                        </a>
                     </div>
                 </div>
             </div>
-            <hr class="my-3">
-            <div class="text-center">
-                <p class="mb-0">&copy; 2024 Nc Glamourstore. Todos os direitos reservados.</p>
+        </nav>
+        
+        <!-- Welcome Banner -->
+        <div class="bg-light py-3">
+            <div class="container text-center">
+                <h4 class="mb-2" style="color: var(--primary-green);">Loja de Diversos</h4>
+                <p class="mb-0 text-muted">
+                    ✨ Roupas | Calçados | Cosméticos | Acessórios | Aquisição Imediata
+                </p>
             </div>
         </div>
-    </footer>
 
-    <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
-</body>
+        <!-- Main Content -->
+        <div class="container-fluid">
+            <div class="row">{% block content %}{% endblock %}</div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer mt-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="fw-bold mb-3">Informações de Contato</h5>
+                        <p class="mb-2">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            Luanda, Kilamba, Angola
+                        </p>
+                        <p class="mb-2">
+                            <i class="fas fa-phone me-2"></i>
+                            +244 934 611 389
+                        </p>
+                        <p class="mb-2">
+                            <i class="fas fa-envelope me-2"></i>
+                            narcia_lages@gmail.com
+                        </p>
+                        <p class="mb-0">
+                            <i class="fas fa-user me-2"></i>
+                            narcia_lages
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <h5 class="fw-bold mb-3">Nc Glamourstore</h5>
+                        <p class="mb-3">
+                            Sua loja online de confiança para moda, beleza e
+                            acessórios.
+                        </p>
+                        <div class="mb-3">
+                            <a href="#" class="text-white me-3"
+                                >Política de Privacidade</a
+                            >
+                            <a href="#" class="text-white">Termos de Serviço</a>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-3" />
+                <div class="text-center">
+                    <p class="mb-0">
+                        &copy; 2024 Nc Glamourstore. Todos os direitos
+                        reservados.
+                    </p>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Bootstrap 5 JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Custom JS -->
+        <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+    </body>
 </html>

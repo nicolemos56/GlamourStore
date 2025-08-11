@@ -25,6 +25,252 @@ def init_default_data():
             admin_user.set_password('admin123')
             db.session.add(admin_user)
         
+        # Add default products if none exist
+        if Product.query.count() == 0:
+            default_products = [
+                # Cosméticos
+                {
+                    'name': 'Fantasy de Britney Spears',
+                    'price': 45000.00,
+                    'category': 'Cosméticos',
+                    'description': 'Perfume feminino Fantasy de Britney Spears, fragância doce e envolvente.',
+                    'stock_quantity': 10
+                },
+                {
+                    'name': 'Água de colônia Oásis de ameixa',
+                    'price': 4000.00,
+                    'category': 'Cosméticos',
+                    'description': 'Água de colônia com fragrância fresca de ameixa.',
+                    'stock_quantity': 25
+                },
+                {
+                    'name': 'Batom Matte Vermelho',
+                    'price': 8500.00,
+                    'category': 'Cosméticos',
+                    'description': 'Batom matte de longa duração na cor vermelho clássico.',
+                    'stock_quantity': 15
+                },
+                {
+                    'name': 'Base Líquida Natural',
+                    'price': 12000.00,
+                    'category': 'Cosméticos',
+                    'description': 'Base líquida com cobertura natural e acabamento sedoso.',
+                    'stock_quantity': 20
+                },
+                {
+                    'name': 'Máscara de Cílios Volume',
+                    'price': 15000.00,
+                    'category': 'Cosméticos',
+                    'description': 'Máscara para cílios que proporciona volume e alongamento.',
+                    'stock_quantity': 18
+                },
+                
+                # Calçados Femininos
+                {
+                    'name': 'Bota Salto',
+                    'price': 10000.00,
+                    'category': 'Calçados Femininos',
+                    'description': 'Bota elegante com salto médio, ideal para ocasiões especiais.',
+                    'stock_quantity': 12
+                },
+                {
+                    'name': 'Sandália Elegante',
+                    'price': 8500.00,
+                    'category': 'Calçados Femininos',
+                    'description': 'Sandália feminina elegante para eventos e festas.',
+                    'stock_quantity': 15
+                },
+                {
+                    'name': 'Tênis Casual Branco',
+                    'price': 12500.00,
+                    'category': 'Calçados Femininos',
+                    'description': 'Tênis branco casual confortável para o dia a dia.',
+                    'stock_quantity': 20
+                },
+                {
+                    'name': 'Sapato Social Feminino',
+                    'price': 14000.00,
+                    'category': 'Calçados Femininos',
+                    'description': 'Sapato social feminino para ambiente profissional.',
+                    'stock_quantity': 10
+                },
+                
+                # Roupas Femininas
+                {
+                    'name': 'Calça Leggings Jeans',
+                    'price': 10300.00,
+                    'category': 'Roupas Femininas',
+                    'description': 'Calça leggings com design jeans, confortável e estilosa.',
+                    'stock_quantity': 25
+                },
+                {
+                    'name': 'Calça Simples Jeans',
+                    'price': 10000.00,
+                    'category': 'Roupas Femininas',
+                    'description': 'Calça jeans clássica de corte simples e versátil.',
+                    'stock_quantity': 30
+                },
+                {
+                    'name': 'Calção Listrado',
+                    'price': 3800.00,
+                    'category': 'Roupas Femininas',
+                    'description': 'Calção listrado leve e confortável para o verão.',
+                    'stock_quantity': 22
+                },
+                {
+                    'name': 'Calça Cintura Subida Flare',
+                    'price': 15960.00,
+                    'category': 'Roupas Femininas',
+                    'description': 'Calça de cintura alta com corte flare, muito elegante.',
+                    'stock_quantity': 18
+                },
+                {
+                    'name': 'Calças Estampadas',
+                    'price': 14500.00,
+                    'category': 'Roupas Femininas',
+                    'description': 'Calças com estampas modernas e coloridas.',
+                    'stock_quantity': 16
+                },
+                {
+                    'name': 'Vestido Casual Verão',
+                    'price': 18000.00,
+                    'category': 'Roupas Femininas',
+                    'description': 'Vestido casual perfeito para os dias quentes de verão.',
+                    'stock_quantity': 14
+                },
+                {
+                    'name': 'Blusa Social Feminina',
+                    'price': 12500.00,
+                    'category': 'Roupas Femininas',
+                    'description': 'Blusa social feminina para ambiente profissional.',
+                    'stock_quantity': 20
+                },
+                
+                # Bolsas
+                {
+                    'name': 'Bolsa de Mão Couro',
+                    'price': 25000.00,
+                    'category': 'Bolsas',
+                    'description': 'Bolsa de mão em couro legítimo, elegante e durável.',
+                    'stock_quantity': 8
+                },
+                {
+                    'name': 'Carteira Feminina Elegante',
+                    'price': 8500.00,
+                    'category': 'Bolsas',
+                    'description': 'Carteira feminina com design elegante e múltiplos compartimentos.',
+                    'stock_quantity': 25
+                },
+                {
+                    'name': 'Mochila Casual Urbana',
+                    'price': 15000.00,
+                    'category': 'Bolsas',
+                    'description': 'Mochila urbana casual com design moderno.',
+                    'stock_quantity': 12
+                },
+                {
+                    'name': 'Bolsa Tiracolo Moderna',
+                    'price': 18500.00,
+                    'category': 'Bolsas',
+                    'description': 'Bolsa tiracolo com design moderno e funcional.',
+                    'stock_quantity': 15
+                },
+                
+                # Acessórios
+                {
+                    'name': 'Colar Dourado Delicado',
+                    'price': 12000.00,
+                    'category': 'Acessórios',
+                    'description': 'Colar dourado delicado para ocasiões especiais.',
+                    'stock_quantity': 20
+                },
+                {
+                    'name': 'Brincos Pérola Clássicos',
+                    'price': 15500.00,
+                    'category': 'Acessórios',
+                    'description': 'Brincos de pérola clássicos e elegantes.',
+                    'stock_quantity': 18
+                },
+                {
+                    'name': 'Relógio Feminino Elegante',
+                    'price': 35000.00,
+                    'category': 'Acessórios',
+                    'description': 'Relógio feminino elegante com pulseira de couro.',
+                    'stock_quantity': 10
+                },
+                {
+                    'name': 'Óculos de Sol Fashion',
+                    'price': 22000.00,
+                    'category': 'Acessórios',
+                    'description': 'Óculos de sol com design fashion e proteção UV.',
+                    'stock_quantity': 12
+                },
+                
+                # Calçados Infantis
+                {
+                    'name': 'Tênis Infantil Colorido',
+                    'price': 8500.00,
+                    'category': 'Calçados Infantis',
+                    'description': 'Tênis colorido e confortável para crianças.',
+                    'stock_quantity': 20
+                },
+                {
+                    'name': 'Sandália Infantil Confortável',
+                    'price': 6500.00,
+                    'category': 'Calçados Infantis',
+                    'description': 'Sandália infantil confortável para uso diário.',
+                    'stock_quantity': 25
+                },
+                {
+                    'name': 'Sapatinho de Bebê',
+                    'price': 4500.00,
+                    'category': 'Calçados Infantis',
+                    'description': 'Sapatinho macio e seguro para bebês.',
+                    'stock_quantity': 30
+                },
+                
+                # Produtos e acessórios de cabelo
+                {
+                    'name': 'Shampoo Nutritivo 500ml',
+                    'price': 9500.00,
+                    'category': 'Produtos e acessórios de cabelo',
+                    'description': 'Shampoo nutritivo que fortalece e hidrata os cabelos.',
+                    'stock_quantity': 40
+                },
+                {
+                    'name': 'Condicionador Hidratante',
+                    'price': 8500.00,
+                    'category': 'Produtos e acessórios de cabelo',
+                    'description': 'Condicionador hidratante para cabelos macios e sedosos.',
+                    'stock_quantity': 35
+                },
+                {
+                    'name': 'Escova de Cabelo Premium',
+                    'price': 12000.00,
+                    'category': 'Produtos e acessórios de cabelo',
+                    'description': 'Escova de cabelo premium com cerdas naturais.',
+                    'stock_quantity': 15
+                },
+                {
+                    'name': 'Presilhas Decorativas Kit',
+                    'price': 5500.00,
+                    'category': 'Produtos e acessórios de cabelo',
+                    'description': 'Kit com presilhas decorativas variadas para cabelos.',
+                    'stock_quantity': 50
+                },
+                {
+                    'name': 'Óleo Capilar Reparador',
+                    'price': 15500.00,
+                    'category': 'Produtos e acessórios de cabelo',
+                    'description': 'Óleo capilar reparador para cabelos danificados.',
+                    'stock_quantity': 20
+                }
+            ]
+            
+            for product_data in default_products:
+                product = Product(**product_data)
+                db.session.add(product)
+        
         db.session.commit()
         print("Default data initialized successfully!")
         
