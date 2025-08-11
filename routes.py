@@ -1,7 +1,8 @@
 from flask import render_template, request, session, redirect, url_for, jsonify, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from app import app
-from database import AdminUser, get_dashboard_stats, get_products, get_orders, get_categories, add_product, update_product, delete_product, get_product_by_id, update_order_status
+from database import get_dashboard_stats, get_products, get_orders, get_categories, add_product, update_product, delete_product, get_product_by_id, update_order_status
+from models import User
 
 # Product data with stock photos - Expanded catalog
 PRODUCTS = [
@@ -462,7 +463,7 @@ def admin_login():
         username = request.form['username']
         password = request.form['password']
         
-        user = AdminUser.get_by_username(username)
+        user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
             login_user(user)
             next_page = request.args.get('next')
