@@ -21,11 +21,18 @@ app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key-change-in-prod
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Configure the database
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
-app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-    "pool_recycle": 300,
-    "pool_pre_ping": True,
-}
+database_url = os.environ.get("DATABASE_URL")
+if not database_url or "ep-calm-shadow-a5nmejk6.us-east-2.aws.neon.tech" in database_url:
+    # Fallback to SQLite if PostgreSQL is not available or using disabled Neon endpoint
+    database_url = "sqlite:///nc_glamourstore.db"
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {}
+else:
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "pool_recycle": 300,
+        "pool_pre_ping": True,
+    }
 
 # Configure upload settings
 app.config['UPLOAD_FOLDER'] = 'static/images/products'
@@ -41,7 +48,7 @@ db.init_app(app)
 # Configure Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "admin_login"
+login_manager.login_view = "admin_login"  # type: ignore
 login_manager.login_message = "Por favor, faça login para acessar esta página."
 
 # Initialize session cart if not exists
