@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Payment method handlers
     function updatePaymentInfo() {
-        if (multicaixaRadio.checked) {
+        if (multicaixaRadio.checked || bankTransferRadio.checked) {
             nextStepsInfo.style.display = 'none';
             bankDetailsInfo.style.display = 'block';
         } else {
@@ -480,7 +480,7 @@ function updateModalContentForPayment(paymentMethod) {
     const nextStepsModalInfo = document.getElementById('next-steps-info');
     const bankDetailsModalInfo = document.getElementById('bank-details-info');
     
-    if (paymentMethod === 'multicaixa') {
+    if (paymentMethod === 'multicaixa' || paymentMethod === 'bank_transfer') {
         // Show bank details in the modal
         if (nextStepsModalInfo) nextStepsModalInfo.style.display = 'none';
         if (bankDetailsModalInfo) bankDetailsModalInfo.style.display = 'block';
