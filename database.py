@@ -476,7 +476,7 @@ def get_dashboard_stats():
                 'customer_name': o.customer_name,
                 'total_amount': float(o.total_amount),
                 'status': o.status,
-                'created_at': o.created_at
+                'created_at': o.created_at.strftime('%Y-%m-%d') if o.created_at else 'N/A'
             }
             for o in recent_orders_query
         ]
