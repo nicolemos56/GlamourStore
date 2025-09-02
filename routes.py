@@ -609,6 +609,37 @@ def admin_logout():
     flash('Logout realizado com sucesso.', 'success')
     return redirect(url_for('admin_login'))
 
+@app.route('/admin/change-password', methods=['GET', 'POST'])
+@login_required
+def admin_change_password():
+    if request.method == 'POST':
+        current_password = request.form['current_password']
+        new_password = request.form['new_password']
+        confirm_password = request.form['confirm_password']
+        
+        # Verificar senha atual
+        if not current_user.check_password(current_password):
+            flash('Senha atual incorreta.', 'error')
+            return render_template('admin/change_password.html')
+        
+        # Verificar se as novas senhas coincidem
+        if new_password != confirm_password:
+            flash('As novas senhas não coincidem.', 'error')
+            return render_template('admin/change_password.html')
+        
+        # Verificar tamanho mínimo da senha
+        if len(new_password) < 6:
+            flash('A nova senha deve ter pelo menos 6 caracteres.', 'error')
+            return render_template('admin/change_password.html')
+        
+        # Alterar senha
+        current_user.set_password(new_password)
+        db.session.commit()
+        flash('Senha alterada com sucesso!', 'success')
+        return redirect(url_for('admin_dashboard'))
+    
+    return render_template('admin/change_password.html')
+
 @app.route('/admin')
 @app.route('/admin/dashboard')
 @login_required
