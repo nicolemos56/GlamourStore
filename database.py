@@ -463,9 +463,9 @@ def get_dashboard_stats():
         # Get pending orders
         pending_orders = Order.query.filter_by(status='pending').count()
         
-        # Get total sales
+        # Get total sales (only delivered orders)
         total_sales = db.session.query(func.coalesce(func.sum(Order.total_amount), 0)).filter(
-            Order.status != 'cancelled'
+            Order.status == 'delivered'
         ).scalar()
         
         # Get recent orders
