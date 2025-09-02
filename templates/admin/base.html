@@ -62,11 +62,14 @@
             align-items: center;
             justify-content: center;
             background: rgba(241, 196, 15, 0.1);
+            overflow: hidden;
         }
         
-        .admin-logo i {
-            font-size: 2rem;
-            color: var(--admin-gold);
+        .admin-logo img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            border-radius: 50%;
         }
         
         .admin-header {
@@ -130,12 +133,12 @@
                 <div class="position-sticky pt-3">
                     <div class="text-center mb-4">
                         <div class="admin-logo">
-                            <i class="fas fa-crown"></i>
+                            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Nc Glamourstore">
                         </div>
                         <h4 class="text-white mb-1" style="color: var(--admin-gold) !important;">
-                            Painel Admin
+                            Nc Glamourstore
                         </h4>
-                        <small class="text-muted">Nc Glamourstore</small>
+                        <small class="text-muted">Painel Admin</small>
                     </div>
                     
                     <ul class="nav flex-column">
