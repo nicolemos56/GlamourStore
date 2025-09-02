@@ -452,7 +452,7 @@ def checkout():
     # Check if cart is empty
     if not session.get('cart') or len(session.get('cart', {})) == 0:
         flash('Seu carrinho está vazio. Adicione produtos antes de continuar.', 'warning')
-        return redirect(url_for('products'))
+        return redirect(url_for('index'))
     
     cart_items = []
     cart_total = 0
@@ -478,7 +478,7 @@ def checkout():
     # Double check if cart is still empty after processing
     if not cart_items:
         flash('Nenhum produto válido encontrado no carrinho.', 'error')
-        return redirect(url_for('products'))
+        return redirect(url_for('index'))
     
     return render_template('checkout.html', cart_items=cart_items, cart_total=cart_total)
 
@@ -487,7 +487,7 @@ def finalizar():
     # Check if cart is empty
     if not session.get('cart') or len(session.get('cart', {})) == 0:
         flash('Seu carrinho está vazio. Adicione produtos antes de finalizar a compra.', 'warning')
-        return redirect(url_for('products'))
+        return redirect(url_for('index'))
     
     cart_items = []
     cart_total = 0
@@ -515,7 +515,7 @@ def finalizar():
     # Double check if cart is still empty after processing
     if not cart_items:
         flash('Nenhum produto válido encontrado no carrinho.', 'error')
-        return redirect(url_for('products'))
+        return redirect(url_for('index'))
     
     # Get bank details for payment information
     bank_details = get_bank_details()
