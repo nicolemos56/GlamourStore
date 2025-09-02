@@ -36,7 +36,7 @@
                                     <tbody>
                                         {% for product in products %}
                                             <tr>
-                                                <td>
+                                                <td data-label="Imagem">
                                                     {% if product.image_url %}
                                                         <img src="{{ product.image_url }}" alt="{{ product.name }}" 
                                                              class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
@@ -47,29 +47,29 @@
                                                         </div>
                                                     {% endif %}
                                                 </td>
-                                                <td>
+                                                <td data-label="Nome">
                                                     <strong>{{ product.name }}</strong>
                                                     {% if product.description %}
                                                         <br><small class="text-muted">{{ product.description[:50] }}{{ '...' if product.description|length > 50 }}</small>
                                                     {% endif %}
                                                 </td>
-                                                <td>
+                                                <td data-label="Categoria">
                                                     <span class="category-pill">{{ product.category }}</span>
                                                 </td>
-                                                <td>
+                                                <td data-label="Preço">
                                                     <span class="price">{{ '{:,.0f}'.format(product.price) }} Kz</span>
                                                 </td>
-                                                <td>
+                                                <td data-label="Estoque">
                                                     <span class="badge bg-{{ 'success' if product.stock_quantity > 10 else 'warning' if product.stock_quantity > 0 else 'danger' }}">
                                                         {{ product.stock_quantity }} unid.
                                                     </span>
                                                 </td>
-                                                <td>
+                                                <td data-label="Status">
                                                     <span class="badge bg-{{ 'success' if product.is_active else 'secondary' }}">
                                                         {{ 'Ativo' if product.is_active else 'Inativo' }}
                                                     </span>
                                                 </td>
-                                                <td>
+                                                <td data-label="Ações">
                                                     <div class="btn-group btn-group-sm">
                                                         <a href="{{ url_for('admin_edit_product', product_id=product.id) }}" 
                                                            class="btn btn-outline-primary">
