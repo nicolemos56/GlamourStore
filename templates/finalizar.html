@@ -123,21 +123,20 @@
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="radio" name="payment_method" id="multicaixa" value="multicaixa">
                             <label class="form-check-label" for="multicaixa">
-                                Multicaixa
+                                Multicaixa ou internet banking
                             </label>
                         </div>
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="payment_method" id="mfiway" value="mfiway">
-                            <label class="form-check-label" for="mfiway">
-                                MFIWAY
-                            </label>
-                        </div>
-                        <div class="form-check">
                             <input class="form-check-input" type="radio" name="payment_method" id="cash_on_pickup" value="cash_on_pickup" checked>
                             <label class="form-check-label" for="cash_on_pickup">
                                 Pagar no levantamento
                             </label>
-                            <small class="text-muted d-block">Dinheiro e Transferência Bancária</small>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_method" id="bank_transfer" value="bank_transfer">
+                            <label class="form-check-label" for="bank_transfer">
+                                Dinheiro e Transferência Bancária
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -293,7 +292,7 @@
                 </div>
                 
                 <!-- Delivery Information -->
-                <div class="card border-0 bg-primary text-white mt-3">
+                <div id="next-steps-info" class="card border-0 bg-primary text-white mt-3">
                     <div class="card-body text-center">
                         <h6 class="fw-bold mb-2">
                             <i class="fas fa-truck me-2"></i>Próximos Passos
@@ -302,6 +301,22 @@
                             Receberá um e-mail de confirmação com os detalhes do seu pedido.<br>
                             Entraremos em contacto em breve para coordenar a entrega.
                         </p>
+                    </div>
+                </div>
+                
+                <!-- Bank Details Information (Hidden by default) -->
+                <div id="bank-details-info" class="card border-0 bg-success text-white mt-3" style="display: none;">
+                    <div class="card-body text-center">
+                        <h6 class="fw-bold mb-2">
+                            <i class="fas fa-university me-2"></i>Dados Bancários - Glamour Store
+                        </h6>
+                        <div class="text-start small">
+                            <p class="mb-1"><strong>Banco:</strong> Banco Económico</p>
+                            <p class="mb-1"><strong>IBAN:</strong> AO06 0058 0000 1234 5678 9012 3</p>
+                            <p class="mb-1"><strong>Conta:</strong> 123456789</p>
+                            <p class="mb-1"><strong>Titular:</strong> NC Glamour Store, Lda</p>
+                            <p class="mb-0"><strong>NIF:</strong> 5417022456</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -316,12 +331,19 @@
 </div>
 
 <script>
-// Show/hide delivery address form
+// Show/hide delivery address form and payment info
 document.addEventListener('DOMContentLoaded', function() {
     const pickupRadio = document.getElementById('pickup');
     const homeDeliveryRadio = document.getElementById('home_delivery');
     const deliveryAddressForm = document.getElementById('delivery-address-form');
     
+    const multicaixaRadio = document.getElementById('multicaixa');
+    const cashOnPickupRadio = document.getElementById('cash_on_pickup');
+    const bankTransferRadio = document.getElementById('bank_transfer');
+    const nextStepsInfo = document.getElementById('next-steps-info');
+    const bankDetailsInfo = document.getElementById('bank-details-info');
+    
+    // Delivery method handlers
     pickupRadio.addEventListener('change', function() {
         if (this.checked) {
             deliveryAddressForm.style.display = 'none';
@@ -333,6 +355,21 @@ document.addEventListener('DOMContentLoaded', function() {
             deliveryAddressForm.style.display = 'block';
         }
     });
+    
+    // Payment method handlers
+    function updatePaymentInfo() {
+        if (multicaixaRadio.checked) {
+            nextStepsInfo.style.display = 'none';
+            bankDetailsInfo.style.display = 'block';
+        } else {
+            nextStepsInfo.style.display = 'block';
+            bankDetailsInfo.style.display = 'none';
+        }
+    }
+    
+    multicaixaRadio.addEventListener('change', updatePaymentInfo);
+    cashOnPickupRadio.addEventListener('change', updatePaymentInfo);
+    bankTransferRadio.addEventListener('change', updatePaymentInfo);
 });
 
 function finalizeOrder() {
@@ -363,6 +400,9 @@ function finalizeOrder() {
     
     // Populate modal with order details
     populateOrderConfirmationModal();
+    
+    // Update modal content based on payment method
+    updateModalContentForPayment(paymentMethod);
     
     // Show modal
     const modal = new bootstrap.Modal(document.getElementById('orderConfirmationModal'));
@@ -423,10 +463,25 @@ function populateOrderConfirmationModal() {
 
 function getPaymentMethodText(method) {
     switch(method) {
-        case 'multicaixa': return 'Multicaixa';
-        case 'mfiway': return 'MFIWAY';
+        case 'multicaixa': return 'Multicaixa ou internet banking';
         case 'cash_on_pickup': return 'Pagar no levantamento';
+        case 'bank_transfer': return 'Dinheiro e Transferência Bancária';
         default: return method;
+    }
+}
+
+function updateModalContentForPayment(paymentMethod) {
+    const nextStepsModalInfo = document.getElementById('next-steps-info');
+    const bankDetailsModalInfo = document.getElementById('bank-details-info');
+    
+    if (paymentMethod === 'multicaixa') {
+        // Show bank details in the modal
+        if (nextStepsModalInfo) nextStepsModalInfo.style.display = 'none';
+        if (bankDetailsModalInfo) bankDetailsModalInfo.style.display = 'block';
+    } else {
+        // Show standard next steps
+        if (nextStepsModalInfo) nextStepsModalInfo.style.display = 'block';
+        if (bankDetailsModalInfo) bankDetailsModalInfo.style.display = 'none';
     }
 }
 
