@@ -47,7 +47,11 @@
                         </td>
                         <td>
                             <div>
-                                <small><i class="fas fa-phone"></i> {{ order.customer_phone }}</small><br>
+                                <small><i class="fas fa-phone"></i> {{ order.customer_phone }}</small>
+                                <a href="https://wa.me/{{ order.customer_phone.replace(' ', '').replace('-', '').replace('(', '').replace(')', '') }}?text=Olá {{ order.customer_name }}, este é o NC Glamour Store. Obrigado pelo seu pedido #{{ order.id }}!" 
+                                   target="_blank" class="btn btn-success btn-sm ms-2" title="Enviar WhatsApp">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a><br>
                                 <small><i class="fas fa-envelope"></i> {{ order.customer_email }}</small>
                             </div>
                         </td>

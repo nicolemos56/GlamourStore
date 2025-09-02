@@ -121,21 +121,15 @@
                     </div>
                     <div class="card-body">
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="payment_method" id="multicaixa" value="multicaixa">
+                            <input class="form-check-input" type="radio" name="payment_method" id="multicaixa" value="multicaixa" checked>
                             <label class="form-check-label" for="multicaixa">
                                 Multicaixa ou internet banking
                             </label>
                         </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="payment_method" id="cash_on_pickup" value="cash_on_pickup" checked>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_method" id="cash_on_pickup" value="cash_on_pickup">
                             <label class="form-check-label" for="cash_on_pickup">
                                 Pagar no levantamento
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="payment_method" id="bank_transfer" value="bank_transfer">
-                            <label class="form-check-label" for="bank_transfer">
-                                Dinheiro e Transferência Bancária
                             </label>
                         </div>
                     </div>
@@ -248,7 +242,7 @@
 <div class="modal fade" id="orderConfirmationModal" tabindex="-1" aria-labelledby="orderConfirmationModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-success text-white">
+            <div class="modal-header text-white" style="background-color: var(--primary-green);">
                 <h5 class="modal-title" id="orderConfirmationModalLabel">
                     <i class="fas fa-check-circle me-2"></i>Pedido Confirmado
                 </h5>
@@ -256,8 +250,8 @@
             </div>
             <div class="modal-body">
                 <div class="text-center mb-4">
-                    <i class="fas fa-shopping-bag fa-3x text-success mb-3"></i>
-                    <h4 class="text-success">Obrigado pela sua compra!</h4>
+                    <i class="fas fa-shopping-bag fa-3x mb-3" style="color: var(--primary-green);"></i>
+                    <h4 style="color: var(--primary-green);">Obrigado pela sua compra!</h4>
                     <p class="text-muted">O seu pedido foi recebido com sucesso.</p>
                 </div>
                 
@@ -298,14 +292,14 @@
                             <i class="fas fa-truck me-2"></i>Próximos Passos
                         </h6>
                         <p class="mb-0 small">
-                            Receberá um e-mail de confirmação com os detalhes do seu pedido.<br>
+                            Receberá uma mensagem no whatsapp de confirmação com os detalhes do seu pedido.<br>
                             Entraremos em contacto em breve para coordenar a entrega.
                         </p>
                     </div>
                 </div>
                 
                 <!-- Bank Details Information (Hidden by default) -->
-                <div id="bank-details-info" class="card border-0 bg-success text-white mt-3" style="display: none;">
+                <div id="bank-details-info" class="card border-0 text-white mt-3" style="display: none; background-color: var(--primary-green);">
                     <div class="card-body text-center">
                         <h6 class="fw-bold mb-2">
                             <i class="fas fa-university me-2"></i>Dados Bancários - Glamour Store
@@ -345,7 +339,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const multicaixaRadio = document.getElementById('multicaixa');
     const cashOnPickupRadio = document.getElementById('cash_on_pickup');
-    const bankTransferRadio = document.getElementById('bank_transfer');
     const nextStepsInfo = document.getElementById('next-steps-info');
     const bankDetailsInfo = document.getElementById('bank-details-info');
     
@@ -364,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Payment method handlers
     function updatePaymentInfo() {
-        if (multicaixaRadio.checked || bankTransferRadio.checked) {
+        if (multicaixaRadio.checked) {
             nextStepsInfo.style.display = 'none';
             bankDetailsInfo.style.display = 'block';
         } else {
@@ -375,7 +368,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     multicaixaRadio.addEventListener('change', updatePaymentInfo);
     cashOnPickupRadio.addEventListener('change', updatePaymentInfo);
-    bankTransferRadio.addEventListener('change', updatePaymentInfo);
+    
+    // Initial call to set correct state
+    updatePaymentInfo();
 });
 
 function finalizeOrder() {
@@ -392,27 +387,60 @@ function finalizeOrder() {
     const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
     
     // Validate delivery address if home delivery is selected
+    let deliveryAddress = '';
     if (deliveryMethod === 'home_delivery') {
         const street = document.getElementById('address_street').value;
         const neighborhood = document.getElementById('address_neighborhood').value;
-        const city = document.getElementById('address_city').value;
         const province = document.getElementById('address_province').value;
         
-        if (!street || !neighborhood || !city || !province) {
+        if (!street || !neighborhood || !province) {
             showAlert('Por favor, preencha todos os campos de endereço para entrega', 'warning');
             return;
         }
+        
+        const deliveryNotes = document.getElementById('delivery_notes').value;
+        deliveryAddress = `${street}, ${neighborhood}, ${province}, Angola`;
+        if (deliveryNotes) {
+            deliveryAddress += ` - ${deliveryNotes}`;
+        }
     }
     
-    // Populate modal with order details
-    populateOrderConfirmationModal();
+    // Prepare form data
+    const formData = new FormData();
+    formData.append('customer_name', firstName);
+    formData.append('customer_phone', phone);
+    formData.append('customer_email', email);
+    formData.append('customer_nif', document.getElementById('nif').value || '');
+    formData.append('delivery_method', deliveryMethod);
+    formData.append('payment_method', paymentMethod);
+    formData.append('delivery_address', deliveryAddress);
+    formData.append('observations', document.getElementById('observations').value || '');
     
-    // Update modal content based on payment method
-    updateModalContentForPayment(paymentMethod);
-    
-    // Show modal
-    const modal = new bootstrap.Modal(document.getElementById('orderConfirmationModal'));
-    modal.show();
+    // Send order to server
+    fetch('/process_order', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Populate modal with order details
+            populateOrderConfirmationModal();
+            
+            // Update modal content based on payment method
+            updateModalContentForPayment(paymentMethod);
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('orderConfirmationModal'));
+            modal.show();
+        } else {
+            showAlert(data.message || 'Erro ao processar pedido', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('Erro ao processar pedido. Tente novamente.', 'danger');
+    });
 }
 
 function populateOrderConfirmationModal() {
@@ -461,7 +489,7 @@ function populateOrderConfirmationModal() {
         <p class="mb-1"><strong>Entrega:</strong> ${deliveryMethod === 'pickup' ? 'Levantar na loja' : 'Entrega em casa'}</p>
         <p class="mb-1"><strong>Pagamento:</strong> ${getPaymentMethodText(paymentMethod)}</p>
         <hr class="my-2">
-        <p class="mb-1 fw-bold text-success">Total: {{ "{:,.2f}".format(cart_total) }} Kz</p>
+        <p class="mb-1 fw-bold" style="color: var(--primary-green);">Total: {{ "{:,.2f}".format(cart_total) }} Kz</p>
     `;
     
     document.getElementById('order-details-modal').innerHTML = orderDetails;
@@ -471,7 +499,6 @@ function getPaymentMethodText(method) {
     switch(method) {
         case 'multicaixa': return 'Multicaixa ou internet banking';
         case 'cash_on_pickup': return 'Pagar no levantamento';
-        case 'bank_transfer': return 'Dinheiro e Transferência Bancária';
         default: return method;
     }
 }
@@ -480,7 +507,7 @@ function updateModalContentForPayment(paymentMethod) {
     const nextStepsModalInfo = document.getElementById('next-steps-info');
     const bankDetailsModalInfo = document.getElementById('bank-details-info');
     
-    if (paymentMethod === 'multicaixa' || paymentMethod === 'bank_transfer') {
+    if (paymentMethod === 'multicaixa') {
         // Show bank details in the modal
         if (nextStepsModalInfo) nextStepsModalInfo.style.display = 'none';
         if (bankDetailsModalInfo) bankDetailsModalInfo.style.display = 'block';

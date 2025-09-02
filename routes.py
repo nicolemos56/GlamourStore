@@ -499,6 +499,88 @@ def finalizar():
     
     return render_template('finalizar.html', cart_items=cart_items, cart_total=cart_total, bank_details=bank_details)
 
+@app.route('/process_order', methods=['POST'])
+def process_order():
+    try:
+        # Get form data
+        customer_name = request.form.get('customer_name')
+        customer_phone = request.form.get('customer_phone')
+        customer_email = request.form.get('customer_email')
+        customer_nif = request.form.get('customer_nif', '')
+        delivery_method = request.form.get('delivery_method')
+        payment_method = request.form.get('payment_method')
+        delivery_address = request.form.get('delivery_address', '')
+        observations = request.form.get('observations', '')
+        
+        # Validate required fields
+        if not all([customer_name, customer_phone, customer_email, delivery_method, payment_method]):
+            return jsonify({'success': False, 'message': 'Campos obrigatórios em falta'})
+        
+        # Calculate cart total and get items
+        cart_items = []
+        cart_total = 0
+        
+        for product_id, quantity in session.get('cart', {}).items():
+            db_product = get_product_by_id(int(product_id))
+            if db_product and db_product['is_active']:
+                item_total = db_product['price'] * quantity
+                cart_items.append({
+                    'product_id': db_product['id'],
+                    'product_name': db_product['name'],
+                    'product_price': db_product['price'],
+                    'quantity': quantity,
+                    'subtotal': item_total
+                })
+                cart_total += item_total
+        
+        if not cart_items:
+            return jsonify({'success': False, 'message': 'Carrinho vazio'})
+        
+        # Create order
+        order = Order(
+            customer_name=customer_name,
+            customer_phone=customer_phone,
+            customer_email=customer_email,
+            customer_nif=customer_nif,
+            delivery_method=delivery_method,
+            payment_method=payment_method,
+            total_amount=cart_total,
+            delivery_address=delivery_address,
+            observations=observations,
+            status='pending'
+        )
+        
+        db.session.add(order)
+        db.session.flush()  # Get the order ID
+        
+        # Create order items
+        for item in cart_items:
+            order_item = OrderItem(
+                order_id=order.id,
+                product_id=item['product_id'],
+                product_name=item['product_name'],
+                product_price=item['product_price'],
+                quantity=item['quantity'],
+                subtotal=item['subtotal']
+            )
+            db.session.add(order_item)
+        
+        db.session.commit()
+        
+        # Clear cart
+        session['cart'] = {}
+        session.modified = True
+        
+        return jsonify({
+            'success': True, 
+            'message': 'Pedido criado com sucesso!',
+            'order_id': order.id
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': f'Erro ao processar pedido: {str(e)}'})
+
 # ===== ADMIN PANEL ROUTES =====
 
 @app.route('/admin/login', methods=['GET', 'POST'])
