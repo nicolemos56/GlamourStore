@@ -2,7 +2,7 @@ from flask import render_template, request, session, redirect, url_for, jsonify,
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
 from app import app, allowed_file, db
-from database import get_dashboard_stats, get_products, get_orders, get_categories, add_product, update_product, delete_product, get_product_by_id, update_order_status, get_bank_details, update_bank_details
+from database import get_dashboard_stats, get_products, get_orders, get_categories, add_product, update_product, delete_product, get_product_by_id, update_order_status, delete_order, get_bank_details, update_bank_details
 from models import User, Product, Order, OrderItem
 import os
 import uuid
@@ -746,6 +746,15 @@ def admin_update_order_status(order_id):
         flash('Status do pedido atualizado com sucesso!', 'success')
     else:
         flash('Erro ao atualizar status do pedido.', 'error')
+    return redirect(url_for('admin_orders'))
+
+@app.route('/admin/orders/delete/<int:order_id>', methods=['POST'])
+@login_required
+def admin_delete_order(order_id):
+    if delete_order(order_id):
+        flash('Pedido excluído com sucesso!', 'success')
+    else:
+        flash('Erro ao excluir pedido.', 'error')
     return redirect(url_for('admin_orders'))
 
 @app.route('/update_cart', methods=['POST'])

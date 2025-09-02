@@ -97,6 +97,9 @@
                                 <button type="button" class="btn btn-outline-success" onclick="changeStatus({{ order.id }}, '{{ order.status }}')">
                                     <i class="fas fa-edit"></i>
                                 </button>
+                                <button type="button" class="btn btn-outline-danger" onclick="confirmDelete({{ order.id }}, '{{ order.customer_name }}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -217,6 +220,28 @@
         </div>
     </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir o pedido do cliente <strong id="orderCustomerName"></strong>?</p>
+                <p class="text-muted small">Esta ação não pode ser desfeita e todos os dados do pedido serão perdidos.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Excluir Pedido</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -265,6 +290,12 @@ function changeStatus(orderId, currentStatus) {
     document.getElementById('status').value = currentStatus;
     document.getElementById('statusForm').action = '/admin/orders/update_status/' + orderId;
     new bootstrap.Modal(document.getElementById('statusModal')).show();
+}
+
+function confirmDelete(orderId, customerName) {
+    document.getElementById('orderCustomerName').textContent = customerName;
+    document.getElementById('deleteForm').action = '/admin/orders/delete/' + orderId;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
 }
 </script>
 {% endblock %}

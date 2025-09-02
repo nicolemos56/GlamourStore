@@ -508,6 +508,24 @@ def update_order_status(order_id, status):
         db.session.rollback()
         return False
 
+def delete_order(order_id):
+    """Delete an order and its items from database"""
+    try:
+        order = Order.query.get(order_id)
+        if order:
+            # Delete all order items first
+            for item in order.items:
+                db.session.delete(item)
+            # Delete the order
+            db.session.delete(order)
+            db.session.commit()
+            return True
+        return False
+    except Exception as e:
+        print(f"Error deleting order: {e}")
+        db.session.rollback()
+        return False
+
 def get_dashboard_stats():
     """Get dashboard statistics"""
     try:
