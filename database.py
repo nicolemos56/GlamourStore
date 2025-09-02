@@ -290,11 +290,14 @@ def init_default_data():
         print(f"Error initializing default data: {e}")
         db.session.rollback()
 
-def get_products():
-    """Get all products from database"""
+def get_products(page=1, per_page=10):
+    """Get products from database with pagination"""
     try:
-        products = Product.query.order_by(Product.created_at.desc()).all()
-        return [
+        products_pagination = Product.query.order_by(Product.created_at.desc()).paginate(
+            page=page, per_page=per_page, error_out=False
+        )
+        
+        products = [
             {
                 'id': p.id,
                 'name': p.name,
@@ -307,11 +310,37 @@ def get_products():
                 'created_at': p.created_at,
                 'updated_at': p.updated_at
             }
-            for p in products
+            for p in products_pagination.items
         ]
+        
+        return {
+            'products': products,
+            'pagination': {
+                'page': products_pagination.page,
+                'pages': products_pagination.pages,
+                'per_page': products_pagination.per_page,
+                'total': products_pagination.total,
+                'has_prev': products_pagination.has_prev,
+                'has_next': products_pagination.has_next,
+                'prev_num': products_pagination.prev_num,
+                'next_num': products_pagination.next_num
+            }
+        }
     except Exception as e:
         print(f"Error getting products: {e}")
-        return []
+        return {
+            'products': [],
+            'pagination': {
+                'page': 1,
+                'pages': 1,
+                'per_page': per_page,
+                'total': 0,
+                'has_prev': False,
+                'has_next': False,
+                'prev_num': None,
+                'next_num': None
+            }
+        }
 
 def get_orders():
     """Get all orders from database"""

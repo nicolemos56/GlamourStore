@@ -266,7 +266,8 @@ def index():
     per_page = 8  # 8 products per page
     
     # Get products from database
-    db_products = get_products()
+    all_products_data = get_products(page=1, per_page=1000)  # Get all products for homepage
+    db_products = all_products_data['products']
     
     # Convert database products to match PRODUCTS format for compatibility
     filtered_products = []
@@ -616,9 +617,13 @@ def admin_dashboard():
 @app.route('/admin/products')
 @login_required
 def admin_products():
-    products = get_products()
+    page = request.args.get('page', 1, type=int)
+    products_data = get_products(page=page, per_page=10)
     categories = get_categories()
-    return render_template('admin/products.html', products=products, categories=categories)
+    return render_template('admin/products.html', 
+                         products=products_data['products'], 
+                         pagination=products_data['pagination'],
+                         categories=categories)
 
 @app.route('/admin/products/add', methods=['GET', 'POST'])
 @login_required

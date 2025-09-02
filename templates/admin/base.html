@@ -13,30 +13,60 @@
             --admin-success: #27ae60;
             --admin-warning: #f39c12;
             --admin-danger: #e74c3c;
+            --admin-gold: #f1c40f;
         }
         
         .sidebar {
             min-height: 100vh;
-            background: var(--admin-primary);
+            background: linear-gradient(180deg, #34495e 0%, #2c3e50 100%);
             color: white;
         }
         
         .sidebar .nav-link {
             color: #ecf0f1;
-            padding: 15px 20px;
-            border-radius: 0;
-            transition: all 0.3s;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 5px 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
         }
         
-        .sidebar .nav-link:hover,
+        .sidebar .nav-link:hover {
+            background: rgba(241, 196, 15, 0.1);
+            color: var(--admin-gold);
+            transform: translateX(5px);
+        }
+        
         .sidebar .nav-link.active {
-            background: var(--admin-secondary);
-            color: white;
+            background: var(--admin-gold);
+            color: #2c3e50;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(241, 196, 15, 0.3);
         }
         
         .sidebar .nav-link i {
-            margin-right: 10px;
+            margin-right: 12px;
             width: 20px;
+            text-align: center;
+        }
+        
+        .admin-logo {
+            width: 80px;
+            height: 80px;
+            border: 3px solid var(--admin-gold);
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(241, 196, 15, 0.1);
+        }
+        
+        .admin-logo i {
+            font-size: 2rem;
+            color: var(--admin-gold);
         }
         
         .admin-header {
@@ -99,9 +129,11 @@
             <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
                 <div class="position-sticky pt-3">
                     <div class="text-center mb-4">
-                        <h4 class="text-white">
-                            <i class="fas fa-crown me-2"></i>
-                            Admin Panel
+                        <div class="admin-logo">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h4 class="text-white mb-1" style="color: var(--admin-gold) !important;">
+                            Painel Admin
                         </h4>
                         <small class="text-muted">Nc Glamourstore</small>
                     </div>
