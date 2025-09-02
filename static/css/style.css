@@ -1,7 +1,8 @@
 /* Custom Styles for Nc Glamourstore */
 
 :root {
-    --primary-color: #6f42c1;
+    --primary-color: var(--primary-green);
+    --primary-green: #5a7a5a;
     --secondary-color: #f8f9fa;
     --accent-color: #28a745;
     --text-color: #333;
@@ -16,7 +17,7 @@ body {
 
 /* Header Styles */
 header {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #8b5fbf 100%) !important;
+    background: linear-gradient(135deg, var(--primary-green) 0%, #4a6a4a 100%) !important;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
@@ -28,8 +29,8 @@ header {
 }
 
 .sidebar h5 {
-    color: var(--primary-color);
-    border-bottom: 2px solid var(--primary-color);
+    color: var(--primary-green);
+    border-bottom: 2px solid var(--primary-green);
     padding-bottom: 0.5rem;
 }
 
@@ -57,13 +58,13 @@ header {
 
 .price {
     font-size: 1.2rem;
-    color: var(--primary-color) !important;
+    color: var(--primary-green) !important;
 }
 
 /* Cart Widget Styles */
 .cart-widget .card {
-    border: 2px solid var(--primary-color);
-    box-shadow: 0 4px 12px rgba(111, 66, 193, 0.15);
+    border: 2px solid var(--primary-green);
+    box-shadow: 0 4px 12px rgba(90, 122, 90, 0.15);
 }
 
 .cart-widget .card-body {
@@ -72,15 +73,15 @@ header {
 
 /* Button Styles */
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #8b5fbf 100%);
+    background: linear-gradient(135deg, var(--primary-green) 0%, #4a6a4a 100%);
     border: none;
     transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #5a2d91 0%, #7a4fa3 100%);
+    background: linear-gradient(135deg, #3a5a3a 0%, #2a4a2a 100%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
+    box-shadow: 0 4px 12px rgba(90, 122, 90, 0.3);
 }
 
 .btn-success {
@@ -95,23 +96,23 @@ header {
 
 /* List Group Styles */
 .list-group-item.active {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
 }
 
 .list-group-item:hover {
-    background-color: #f8f9ff;
+    background-color: #f8fff8;
 }
 
 /* Form Styles */
 .form-control:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 0.2rem rgba(90, 122, 90, 0.25);
 }
 
 .form-select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 0.2rem rgba(90, 122, 90, 0.25);
 }
 
 /* Responsive Design */
@@ -162,20 +163,20 @@ header {
 /* Table Styles for Checkout */
 .table th {
     background-color: var(--secondary-color);
-    color: var(--primary-color);
+    color: var(--primary-green);
     font-weight: 600;
 }
 
 .table-active th {
-    background-color: var(--primary-color);
+    background-color: var(--primary-green);
     color: white;
 }
 
 /* Alert Styles */
 .alert-info {
-    background-color: #e7f3ff;
-    border-color: var(--primary-color);
-    color: #0c5460;
+    background-color: #e7f8e7;
+    border-color: var(--primary-green);
+    color: #2d5a2d;
 }
 
 /* Loading Animation */
@@ -193,12 +194,12 @@ header {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
+    background: var(--primary-green);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #5a2d91;
+    background: #4a6a4a;
 }
 
 /* Categories scroll styling */
@@ -211,25 +212,25 @@ header {
 }
 
 .categories-scroll::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
+    background: var(--primary-green);
     border-radius: 3px;
 }
 
 /* Pagination Styles */
 .pagination .page-link {
-    color: var(--primary-color);
+    color: var(--primary-green);
     border-color: var(--border-color);
 }
 
 .pagination .page-item.active .page-link {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
 }
 
 .pagination .page-link:hover {
-    color: #5a2d91;
-    background-color: #f8f9ff;
-    border-color: var(--primary-color);
+    color: #4a6a4a;
+    background-color: #f8fff8;
+    border-color: var(--primary-green);
 }
 
 /* Quantity Controls */
@@ -240,23 +241,23 @@ header {
 
 .quantity-btn {
     border-color: var(--border-color) !important;
-    color: var(--primary-color) !important;
+    color: var(--primary-green) !important;
 }
 
 .quantity-btn:hover {
-    background-color: var(--primary-color) !important;
+    background-color: var(--primary-green) !important;
     color: white !important;
-    border-color: var(--primary-color) !important;
+    border-color: var(--primary-green) !important;
 }
 
 /* Finalizar page specific styles */
 .card-header {
-    border-bottom: 2px solid var(--primary-color);
+    border-bottom: 2px solid var(--primary-green);
 }
 
 .form-check-input:checked {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
 }
 
 /* Footer styles */
@@ -270,7 +271,7 @@ footer a {
 }
 
 footer a:hover {
-    color: var(--primary-color) !important;
+    color: var(--primary-green) !important;
 }
 
 /* Enhanced card hover effects */
@@ -297,12 +298,12 @@ footer a:hover {
 
 .cart-item:hover {
     background-color: #e9ecef;
-    border-color: var(--primary-color) !important;
+    border-color: var(--primary-green) !important;
 }
 
 .cart-item .quantity-display {
     font-weight: bold;
-    color: var(--primary-color);
+    color: var(--primary-green);
     min-width: 20px;
     text-align: center;
 }
@@ -314,12 +315,12 @@ footer a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-color: var(--primary-color) !important;
-    color: var(--primary-color) !important;
+    border-color: var(--primary-green) !important;
+    color: var(--primary-green) !important;
 }
 
 .cart-item .cart-quantity-btn:hover {
-    background-color: var(--primary-color) !important;
+    background-color: var(--primary-green) !important;
     color: white !important;
 }
 
@@ -347,7 +348,7 @@ footer a:hover {
 }
 
 #cart-items-list::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
+    background: var(--primary-green);
     border-radius: 2px;
 }
 
@@ -451,5 +452,5 @@ footer a:hover {
 /* Delivery method cards */
 .form-check-input:checked ~ .form-check-label {
     font-weight: bold;
-    color: var(--primary-color);
+    color: var(--primary-green);
 }
