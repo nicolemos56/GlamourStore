@@ -476,6 +476,7 @@ def checkout():
 def finalizar():
     cart_items = []
     cart_total = 0
+    cart_count = 0
     
     for product_id, quantity in session.get('cart', {}).items():
         db_product = get_product_by_id(int(product_id))
@@ -494,11 +495,12 @@ def finalizar():
                 'total': item_total
             })
             cart_total += item_total
+            cart_count += quantity
     
     # Get bank details for payment information
     bank_details = get_bank_details()
     
-    return render_template('finalizar.html', cart_items=cart_items, cart_total=cart_total, bank_details=bank_details)
+    return render_template('finalizar.html', cart_items=cart_items, cart_total=cart_total, cart_count=cart_count, bank_details=bank_details)
 
 @app.route('/process_order', methods=['POST'])
 def process_order():

@@ -465,7 +465,6 @@ function populateOrderConfirmationModal() {
     if (deliveryMethod === 'home_delivery') {
         const street = document.getElementById('address_street').value;
         const neighborhood = document.getElementById('address_neighborhood').value;
-        const city = document.getElementById('address_city').value;
         const province = document.getElementById('address_province').value;
         const deliveryNotes = document.getElementById('delivery_notes').value;
         
@@ -474,7 +473,7 @@ function populateOrderConfirmationModal() {
             <p class="mb-1 fw-bold text-primary">Endereço de Entrega:</p>
             <p class="mb-1">${street}</p>
             <p class="mb-1">${neighborhood}</p>
-            <p class="mb-1">${city}, ${province}</p>
+            <p class="mb-1">${province}</p>
             <p class="mb-1">Angola</p>
         `;
         if (deliveryNotes) {
