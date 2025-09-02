@@ -6,6 +6,8 @@ from sqlalchemy.orm import DeclarativeBase
 from flask_login import LoginManager
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.utils import secure_filename
+import cloudinary
+import cloudinary.uploader
 
 # Configure logging for debugging
 logging.basicConfig(level=logging.DEBUG)
@@ -37,6 +39,13 @@ else:
         "pool_pre_ping": True,
     }
 
+# Configure Cloudinary
+cloudinary.config(
+    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME', 'djmeagtqv'),
+    api_key=os.environ.get('CLOUDINARY_API_KEY', '224513256814989'),
+    api_secret=os.environ.get('CLOUDINARY_API_SECRET', 'MFXEYMfdKOZkkvW6HsO9lPWBua8')
+)
+
 # Configure upload settings
 app.config['UPLOAD_FOLDER'] = 'static/images/products'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
@@ -44,6 +53,22 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def upload_to_cloudinary(file):
+    """Upload file to Cloudinary and return the URL"""
+    try:
+        result = cloudinary.uploader.upload(
+            file,
+            folder="nc_glamourstore/products",
+            transformation=[
+                {'width': 800, 'height': 800, 'crop': 'limit'},
+                {'quality': 'auto'}
+            ]
+        )
+        return result['secure_url']
+    except Exception as e:
+        logging.error(f"Erro no upload para Cloudinary: {e}")
+        return None
 
 # Initialize the app with the extension
 db.init_app(app)

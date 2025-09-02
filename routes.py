@@ -673,11 +673,15 @@ def admin_add_product():
         if 'image' in request.files:
             file = request.files['image']
             if file.filename != '' and allowed_file(file.filename):
-                # Create unique filename
-                filename = str(uuid.uuid4()) + '.' + file.filename.rsplit('.', 1)[1].lower()
-                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                file.save(filepath)
-                image_url = f'/static/images/products/{filename}'
+                # Upload to Cloudinary
+                from app import upload_to_cloudinary
+                cloudinary_url = upload_to_cloudinary(file)
+                if cloudinary_url:
+                    image_url = cloudinary_url
+                else:
+                    flash('Erro no upload da imagem. Tente novamente.', 'error')
+                    categories = get_categories()
+                    return render_template('admin/add_product.html', categories=categories)
         
         product_id = add_product(name, price, category, image_url, description, stock_quantity)
         if product_id:
@@ -710,17 +714,16 @@ def admin_edit_product(product_id):
         if 'image' in request.files:
             file = request.files['image']
             if file.filename != '' and allowed_file(file.filename):
-                # Delete old image if exists
-                if image_url and image_url.startswith('/static/images/products/'):
-                    old_filepath = image_url[1:]  # Remove leading slash
-                    if os.path.exists(old_filepath):
-                        os.remove(old_filepath)
-                
-                # Create unique filename
-                filename = str(uuid.uuid4()) + '.' + file.filename.rsplit('.', 1)[1].lower()
-                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                file.save(filepath)
-                image_url = f'/static/images/products/{filename}'
+                # Upload to Cloudinary
+                from app import upload_to_cloudinary
+                cloudinary_url = upload_to_cloudinary(file)
+                if cloudinary_url:
+                    image_url = cloudinary_url
+                    # Note: Old Cloudinary images are automatically managed
+                else:
+                    flash('Erro no upload da imagem. Tente novamente.', 'error')
+                    categories = get_categories()
+                    return render_template('admin/edit_product.html', product=product, categories=categories)
         
         if update_product(product_id, name, price, category, image_url, description, stock_quantity, is_active):
             flash('Produto atualizado com sucesso!', 'success')
