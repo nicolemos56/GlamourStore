@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: nc-glamourstore
+    env: python
+    buildCommand: "pip install -r render_requirements.txt"
+    startCommand: "gunicorn --bind 0.0.0.0:$PORT main:app"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: FLASK_ENV
+        value: production
+
+databases:
+  - name: nc-glamourstore-db
+    databaseName: nc_glamourstore
+    user: nc_admin
