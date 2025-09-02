@@ -1,0 +1,90 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Configurações - Admin - Nc Glamourstore{% endblock %}
+{% block page_title %}Configurações{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-university me-2"></i>
+                    Dados Bancários
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="bank_name" class="form-label">Nome do Banco</label>
+                            <input type="text" class="form-control" id="bank_name" name="bank_name" 
+                                   value="{{ bank_details.bank_name if bank_details else '' }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="account_holder" class="form-label">Titular da Conta</label>
+                            <input type="text" class="form-control" id="account_holder" name="account_holder" 
+                                   value="{{ bank_details.account_holder if bank_details else '' }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label for="iban" class="form-label">IBAN</label>
+                            <input type="text" class="form-control" id="iban" name="iban" 
+                                   value="{{ bank_details.iban if bank_details else '' }}" 
+                                   placeholder="AO06 0058 0000 1234 5678 9012 3" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="account_number" class="form-label">Número da Conta</label>
+                            <input type="text" class="form-control" id="account_number" name="account_number" 
+                                   value="{{ bank_details.account_number if bank_details else '' }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="nif" class="form-label">NIF</label>
+                            <input type="text" class="form-control" id="nif" name="nif" 
+                                   value="{{ bank_details.nif if bank_details else '' }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-save me-2"></i>
+                            Guardar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Preview Card -->
+        {% if bank_details %}
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-eye me-2"></i>
+                    Pré-visualização - Como aparece aos clientes
+                </h6>
+            </div>
+            <div class="card-body bg-success text-white">
+                <div class="text-center">
+                    <h6 class="fw-bold mb-2">
+                        <i class="fas fa-university me-2"></i>Dados Bancários - Glamour Store
+                    </h6>
+                    <div class="text-start small">
+                        <p class="mb-1"><strong>Banco:</strong> {{ bank_details.bank_name }}</p>
+                        <p class="mb-1"><strong>IBAN:</strong> {{ bank_details.iban }}</p>
+                        <p class="mb-1"><strong>Conta:</strong> {{ bank_details.account_number }}</p>
+                        <p class="mb-1"><strong>Titular:</strong> {{ bank_details.account_holder }}</p>
+                        <p class="mb-0"><strong>NIF:</strong> {{ bank_details.nif }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

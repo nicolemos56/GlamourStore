@@ -310,13 +310,19 @@
                         <h6 class="fw-bold mb-2">
                             <i class="fas fa-university me-2"></i>Dados Bancários - Glamour Store
                         </h6>
+                        {% if bank_details %}
                         <div class="text-start small">
-                            <p class="mb-1"><strong>Banco:</strong> Banco Económico</p>
-                            <p class="mb-1"><strong>IBAN:</strong> AO06 0058 0000 1234 5678 9012 3</p>
-                            <p class="mb-1"><strong>Conta:</strong> 123456789</p>
-                            <p class="mb-1"><strong>Titular:</strong> NC Glamour Store, Lda</p>
-                            <p class="mb-0"><strong>NIF:</strong> 5417022456</p>
+                            <p class="mb-1"><strong>Banco:</strong> {{ bank_details.bank_name }}</p>
+                            <p class="mb-1"><strong>IBAN:</strong> {{ bank_details.iban }}</p>
+                            <p class="mb-1"><strong>Conta:</strong> {{ bank_details.account_number }}</p>
+                            <p class="mb-1"><strong>Titular:</strong> {{ bank_details.account_holder }}</p>
+                            <p class="mb-0"><strong>NIF:</strong> {{ bank_details.nif }}</p>
                         </div>
+                        {% else %}
+                        <div class="text-start small">
+                            <p class="mb-0">Dados bancários não configurados. Entre em contacto connosco.</p>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

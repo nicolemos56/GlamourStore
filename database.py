@@ -1,5 +1,5 @@
 from app import db
-from models import User, Product, Order, OrderItem, Category
+from models import User, Product, Order, OrderItem, Category, BankDetails
 from sqlalchemy import func
 
 def init_default_data():
@@ -271,6 +271,18 @@ def init_default_data():
                 product = Product(**product_data)
                 db.session.add(product)
         
+        # Add default bank details if none exist
+        if BankDetails.query.count() == 0:
+            default_bank = BankDetails(
+                bank_name='Banco Económico',
+                iban='AO06 0058 0000 1234 5678 9012 3',
+                account_number='123456789',
+                account_holder='NC Glamour Store, Lda',
+                nif='5417022456',
+                is_active=True
+            )
+            db.session.add(default_bank)
+        
         db.session.commit()
         print("Default data initialized successfully!")
         
@@ -485,3 +497,53 @@ def get_dashboard_stats():
             'total_sales': 0,
             'recent_orders': []
         }
+
+def get_bank_details():
+    """Get active bank details"""
+    try:
+        bank_details = BankDetails.query.filter_by(is_active=True).first()
+        if bank_details:
+            return {
+                'id': bank_details.id,
+                'bank_name': bank_details.bank_name,
+                'iban': bank_details.iban,
+                'account_number': bank_details.account_number,
+                'account_holder': bank_details.account_holder,
+                'nif': bank_details.nif,
+                'is_active': bank_details.is_active,
+                'created_at': bank_details.created_at,
+                'updated_at': bank_details.updated_at
+            }
+        return None
+    except Exception as e:
+        print(f"Error getting bank details: {e}")
+        return None
+
+def update_bank_details(bank_name, iban, account_number, account_holder, nif):
+    """Update bank details"""
+    try:
+        # Get existing bank details or create new one
+        bank_details = BankDetails.query.filter_by(is_active=True).first()
+        if bank_details:
+            bank_details.bank_name = bank_name
+            bank_details.iban = iban
+            bank_details.account_number = account_number
+            bank_details.account_holder = account_holder
+            bank_details.nif = nif
+        else:
+            bank_details = BankDetails(
+                bank_name=bank_name,
+                iban=iban,
+                account_number=account_number,
+                account_holder=account_holder,
+                nif=nif,
+                is_active=True
+            )
+            db.session.add(bank_details)
+        
+        db.session.commit()
+        return True
+    except Exception as e:
+        print(f"Error updating bank details: {e}")
+        db.session.rollback()
+        return False

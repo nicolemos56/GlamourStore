@@ -2,7 +2,7 @@ from flask import render_template, request, session, redirect, url_for, jsonify,
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
 from app import app, allowed_file, db
-from database import get_dashboard_stats, get_products, get_orders, get_categories, add_product, update_product, delete_product, get_product_by_id, update_order_status
+from database import get_dashboard_stats, get_products, get_orders, get_categories, add_product, update_product, delete_product, get_product_by_id, update_order_status, get_bank_details, update_bank_details
 from models import User, Product, Order, OrderItem
 import os
 import uuid
@@ -494,7 +494,10 @@ def finalizar():
             })
             cart_total += item_total
     
-    return render_template('finalizar.html', cart_items=cart_items, cart_total=cart_total)
+    # Get bank details for payment information
+    bank_details = get_bank_details()
+    
+    return render_template('finalizar.html', cart_items=cart_items, cart_total=cart_total, bank_details=bank_details)
 
 # ===== ADMIN PANEL ROUTES =====
 
@@ -622,6 +625,26 @@ def admin_delete_product(product_id):
 def admin_orders():
     orders = get_orders()
     return render_template('admin/orders.html', orders=orders)
+
+@app.route('/admin/settings', methods=['GET', 'POST'])
+@login_required
+def admin_settings():
+    if request.method == 'POST':
+        bank_name = request.form['bank_name']
+        iban = request.form['iban']
+        account_number = request.form['account_number']
+        account_holder = request.form['account_holder']
+        nif = request.form['nif']
+        
+        if update_bank_details(bank_name, iban, account_number, account_holder, nif):
+            flash('Dados bancários atualizados com sucesso!', 'success')
+        else:
+            flash('Erro ao atualizar dados bancários.', 'error')
+        
+        return redirect(url_for('admin_settings'))
+    
+    bank_details = get_bank_details()
+    return render_template('admin/settings.html', bank_details=bank_details)
 
 @app.route('/admin/orders/update_status/<int:order_id>', methods=['POST'])
 @login_required

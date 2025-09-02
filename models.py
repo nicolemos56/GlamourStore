@@ -72,3 +72,16 @@ class OrderItem(db.Model):
     product_price = db.Column(db.Numeric(10, 2), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     subtotal = db.Column(db.Numeric(10, 2), nullable=False)
+
+class BankDetails(db.Model):
+    __tablename__ = 'bank_details'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    bank_name = db.Column(db.String(200), nullable=False)
+    iban = db.Column(db.String(50), nullable=False)
+    account_number = db.Column(db.String(50), nullable=False)
+    account_holder = db.Column(db.String(200), nullable=False)
+    nif = db.Column(db.String(50), nullable=False)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
