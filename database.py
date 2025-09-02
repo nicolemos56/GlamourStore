@@ -342,12 +342,15 @@ def get_products(page=1, per_page=10):
             }
         }
 
-def get_orders():
-    """Get all orders from database"""
+def get_orders(page=1, per_page=10):
+    """Get orders from database with pagination"""
     try:
-        orders = Order.query.order_by(Order.created_at.desc()).all()
+        orders_pagination = Order.query.order_by(Order.created_at.desc()).paginate(
+            page=page, per_page=per_page, error_out=False
+        )
+        
         result = []
-        for order in orders:
+        for order in orders_pagination.items:
             total_items = len(order.items)
             items_summary = ', '.join([f"{item.quantity}x {item.product_name}" for item in order.items])
             
@@ -368,10 +371,35 @@ def get_orders():
                 'total_items': total_items,
                 'items_summary': items_summary
             })
-        return result
+        
+        return {
+            'orders': result,
+            'pagination': {
+                'page': orders_pagination.page,
+                'pages': orders_pagination.pages,
+                'per_page': orders_pagination.per_page,
+                'total': orders_pagination.total,
+                'has_prev': orders_pagination.has_prev,
+                'has_next': orders_pagination.has_next,
+                'prev_num': orders_pagination.prev_num,
+                'next_num': orders_pagination.next_num
+            }
+        }
     except Exception as e:
         print(f"Error getting orders: {e}")
-        return []
+        return {
+            'orders': [],
+            'pagination': {
+                'page': 1,
+                'pages': 1,
+                'per_page': per_page,
+                'total': 0,
+                'has_prev': False,
+                'has_next': False,
+                'prev_num': None,
+                'next_num': None
+            }
+        }
 
 def get_categories():
     """Get all categories from database"""

@@ -712,8 +712,11 @@ def admin_delete_product(product_id):
 @app.route('/admin/orders')
 @login_required
 def admin_orders():
-    orders = get_orders()
-    return render_template('admin/orders.html', orders=orders)
+    page = request.args.get('page', 1, type=int)
+    orders_data = get_orders(page=page, per_page=10)
+    return render_template('admin/orders.html', 
+                         orders=orders_data['orders'], 
+                         pagination=orders_data['pagination'])
 
 @app.route('/admin/settings', methods=['GET', 'POST'])
 @login_required
