@@ -449,6 +449,11 @@ def get_cart_items():
 
 @app.route('/checkout')
 def checkout():
+    # Check if cart is empty
+    if not session.get('cart') or len(session.get('cart', {})) == 0:
+        flash('Seu carrinho está vazio. Adicione produtos antes de continuar.', 'warning')
+        return redirect(url_for('products'))
+    
     cart_items = []
     cart_total = 0
     
@@ -470,10 +475,20 @@ def checkout():
             })
             cart_total += item_total
     
+    # Double check if cart is still empty after processing
+    if not cart_items:
+        flash('Nenhum produto válido encontrado no carrinho.', 'error')
+        return redirect(url_for('products'))
+    
     return render_template('checkout.html', cart_items=cart_items, cart_total=cart_total)
 
 @app.route('/finalizar')
 def finalizar():
+    # Check if cart is empty
+    if not session.get('cart') or len(session.get('cart', {})) == 0:
+        flash('Seu carrinho está vazio. Adicione produtos antes de finalizar a compra.', 'warning')
+        return redirect(url_for('products'))
+    
     cart_items = []
     cart_total = 0
     cart_count = 0
@@ -497,6 +512,11 @@ def finalizar():
             cart_total += item_total
             cart_count += quantity
     
+    # Double check if cart is still empty after processing
+    if not cart_items:
+        flash('Nenhum produto válido encontrado no carrinho.', 'error')
+        return redirect(url_for('products'))
+    
     # Get bank details for payment information
     bank_details = get_bank_details()
     
@@ -518,6 +538,29 @@ def process_order():
         # Validate required fields
         if not all([customer_name, customer_phone, customer_email, delivery_method, payment_method]):
             return jsonify({'success': False, 'message': 'Campos obrigatórios em falta'})
+        
+        # Validate email format
+        import re
+        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_pattern, customer_email):
+            return jsonify({'success': False, 'message': 'Formato de email inválido'})
+        
+        # Validate phone number (basic validation for Angola format)
+        phone_clean = re.sub(r'[\s\-\(\)]', '', customer_phone)
+        if not phone_clean.isdigit() or len(phone_clean) < 9:
+            return jsonify({'success': False, 'message': 'Número de telefone inválido'})
+        
+        # Validate delivery method
+        if delivery_method not in ['pickup', 'delivery']:
+            return jsonify({'success': False, 'message': 'Método de entrega inválido'})
+        
+        # If delivery method is 'delivery', address is required
+        if delivery_method == 'delivery' and not delivery_address.strip():
+            return jsonify({'success': False, 'message': 'Endereço de entrega é obrigatório para entrega em casa'})
+        
+        # Validate customer name
+        if len(customer_name.strip()) < 2:
+            return jsonify({'success': False, 'message': 'Nome deve ter pelo menos 2 caracteres'})
         
         # Calculate cart total and get items
         cart_items = []
@@ -662,11 +705,51 @@ def admin_products():
 @login_required
 def admin_add_product():
     if request.method == 'POST':
-        name = request.form['name']
-        price = float(request.form['price'])
-        category = request.form['category']
-        description = request.form['description']
-        stock_quantity = int(request.form['stock_quantity'])
+        # Get form data
+        name = request.form.get('name', '').strip()
+        price_str = request.form.get('price', '')
+        category = request.form.get('category', '').strip()
+        description = request.form.get('description', '').strip()
+        stock_quantity_str = request.form.get('stock_quantity', '')
+        
+        # Validate required fields
+        if not all([name, price_str, category, stock_quantity_str]):
+            flash('Todos os campos obrigatórios devem ser preenchidos.', 'error')
+            categories = get_categories()
+            return render_template('admin/add_product.html', categories=categories)
+        
+        # Validate name length
+        if len(name) < 2 or len(name) > 100:
+            flash('Nome do produto deve ter entre 2 e 100 caracteres.', 'error')
+            categories = get_categories()
+            return render_template('admin/add_product.html', categories=categories)
+        
+        # Validate and convert price
+        try:
+            price = float(price_str)
+            if price <= 0:
+                raise ValueError()
+        except ValueError:
+            flash('Preço deve ser um número positivo.', 'error')
+            categories = get_categories()
+            return render_template('admin/add_product.html', categories=categories)
+        
+        # Validate and convert stock quantity
+        try:
+            stock_quantity = int(stock_quantity_str)
+            if stock_quantity < 0:
+                raise ValueError()
+        except ValueError:
+            flash('Quantidade em estoque deve ser um número inteiro positivo.', 'error')
+            categories = get_categories()
+            return render_template('admin/add_product.html', categories=categories)
+        
+        # Validate category exists
+        categories_list = get_categories()
+        if category not in [cat['name'] for cat in categories_list]:
+            flash('Categoria inválida.', 'error')
+            categories = get_categories()
+            return render_template('admin/add_product.html', categories=categories)
         
         # Handle image upload
         image_url = ''
@@ -702,12 +785,52 @@ def admin_edit_product(product_id):
         return redirect(url_for('admin_products'))
     
     if request.method == 'POST':
-        name = request.form['name']
-        price = float(request.form['price'])
-        category = request.form['category']
-        description = request.form['description']
-        stock_quantity = int(request.form['stock_quantity'])
+        # Get form data
+        name = request.form.get('name', '').strip()
+        price_str = request.form.get('price', '')
+        category = request.form.get('category', '').strip()
+        description = request.form.get('description', '').strip()
+        stock_quantity_str = request.form.get('stock_quantity', '')
         is_active = 'is_active' in request.form
+        
+        # Validate required fields
+        if not all([name, price_str, category, stock_quantity_str]):
+            flash('Todos os campos obrigatórios devem ser preenchidos.', 'error')
+            categories = get_categories()
+            return render_template('admin/edit_product.html', product=product, categories=categories)
+        
+        # Validate name length
+        if len(name) < 2 or len(name) > 100:
+            flash('Nome do produto deve ter entre 2 e 100 caracteres.', 'error')
+            categories = get_categories()
+            return render_template('admin/edit_product.html', product=product, categories=categories)
+        
+        # Validate and convert price
+        try:
+            price = float(price_str)
+            if price <= 0:
+                raise ValueError()
+        except ValueError:
+            flash('Preço deve ser um número positivo.', 'error')
+            categories = get_categories()
+            return render_template('admin/edit_product.html', product=product, categories=categories)
+        
+        # Validate and convert stock quantity
+        try:
+            stock_quantity = int(stock_quantity_str)
+            if stock_quantity < 0:
+                raise ValueError()
+        except ValueError:
+            flash('Quantidade em estoque deve ser um número inteiro positivo.', 'error')
+            categories = get_categories()
+            return render_template('admin/edit_product.html', product=product, categories=categories)
+        
+        # Validate category exists
+        categories_list = get_categories()
+        if category not in [cat['name'] for cat in categories_list]:
+            flash('Categoria inválida.', 'error')
+            categories = get_categories()
+            return render_template('admin/edit_product.html', product=product, categories=categories)
         
         # Handle image upload
         image_url = product['image_url']  # Keep existing image by default

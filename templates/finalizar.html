@@ -147,7 +147,7 @@
                             <div class="row mb-3">
                                 <div class="col-6">
                                     <label for="first_name" class="form-label">Nome</label>
-                                    <input type="text" class="form-control" id="first_name" placeholder="Primeiro e último">
+                                    <input type="text" class="form-control" id="first_name" placeholder="Primeiro e último" required minlength="2" maxlength="100">
                                 </div>
                                 <div class="col-6">
                                     <label for="nif" class="form-label">NIF</label>
@@ -158,11 +158,11 @@
                             <div class="row mb-3">
                                 <div class="col-6">
                                     <label for="phone" class="form-label">Telemóvel</label>
-                                    <input type="tel" class="form-control" id="phone" placeholder="Telemóvel">
+                                    <input type="tel" class="form-control" id="phone" placeholder="Telemóvel" required pattern="[0-9\s\-\(\)]{9,}">
                                 </div>
                                 <div class="col-6">
                                     <label for="email" class="form-label">E-Mail</label>
-                                    <input type="email" class="form-control" id="email" placeholder="E-Mail">
+                                    <input type="email" class="form-control" id="email" placeholder="E-Mail" required>
                                 </div>
                             </div>
 
@@ -374,12 +374,33 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function finalizeOrder() {
-    const firstName = document.getElementById('first_name').value;
-    const phone = document.getElementById('phone').value;
-    const email = document.getElementById('email').value;
+    const firstName = document.getElementById('first_name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const email = document.getElementById('email').value.trim();
     
+    // Validate required fields
     if (!firstName || !phone || !email) {
         showAlert('Por favor, preencha os campos obrigatórios: Nome, Telemóvel e E-Mail', 'warning');
+        return;
+    }
+    
+    // Validate name length
+    if (firstName.length < 2) {
+        showAlert('Nome deve ter pelo menos 2 caracteres', 'warning');
+        return;
+    }
+    
+    // Validate email format
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+        showAlert('Por favor, insira um email válido', 'warning');
+        return;
+    }
+    
+    // Validate phone number (basic validation for Angola)
+    const phoneClean = phone.replace(/[\s\-\(\)]/g, '');
+    if (!phoneClean.match(/^\d{9,}$/)) {
+        showAlert('Por favor, insira um número de telefone válido (mínimo 9 dígitos)', 'warning');
         return;
     }
     
