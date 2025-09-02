@@ -347,7 +347,7 @@ def add_to_cart():
     session.modified = True
     
     # If it's an AJAX request, return JSON
-    if request.headers.get('Content-Type') == 'application/json' or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         # Calculate new cart totals
         cart_total = 0
         cart_count = 0

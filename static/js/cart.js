@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Add visual feedback
-            input.style.backgroundColor = '#e7f3ff';
+            input.style.backgroundColor = '#e7f8e7';
             setTimeout(() => {
                 input.style.backgroundColor = '';
             }, 300);
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const quantitySelects = document.querySelectorAll('select[name="quantity"]');
     quantitySelects.forEach(select => {
         select.addEventListener('change', function() {
-            this.style.backgroundColor = '#e7f3ff';
+            this.style.backgroundColor = '#e7f8e7';
             setTimeout(() => {
                 this.style.backgroundColor = '';
             }, 300);
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.querySelector('input[name="search"]');
     if (searchInput) {
         searchInput.addEventListener('focus', function() {
-            this.parentElement.style.boxShadow = '0 0 0 0.2rem rgba(111, 66, 193, 0.25)';
+            this.parentElement.style.boxShadow = '0 0 0 0.2rem rgba(90, 122, 90, 0.25)';
         });
         
         searchInput.addEventListener('blur', function() {
