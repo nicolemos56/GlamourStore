@@ -104,5 +104,6 @@ def load_user(user_id):
 
 # Import routes
 from routes import *
-
+if __name__ == "__main__":
+    app.run()
 
